@@ -1,81 +1,83 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenAI, Modality } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import type { ArticleCategory, Locale } from "@/types";
 
 function buildArticlePrompt(
   keyword: string,
   category: ArticleCategory,
   locale: Locale,
-  tone: string
+  tone: string,
+  instructions: string
 ): string {
-  const localeNames = {
+  const localeNames: Record<Locale, string> = {
     "pt-BR": "Português Brasileiro",
     en: "English",
     es: "Español",
   };
 
-  const toneGuides = {
-    professional: "Profissional, autoritário, baseado em dados e fatos",
-    casual: "Casual e acessível, como um amigo experiente explicando",
-    educational: "Didático, passo a passo, explicativo",
-    persuasive: "Persuasivo com provas sociais e urgência sutil",
+  const toneGuides: Record<string, string> = {
+    professional: "Profissional, autoritário, baseado em dados e fatos concretos",
+    casual: "Casual e acessível, como um amigo experiente explicando com exemplos reais",
+    educational: "Didático, passo a passo, com exemplos práticos e clareza total",
+    persuasive: "Persuasivo com provas sociais, benefícios claros e urgência sutil",
   };
 
-  return `Você é um especialista em SEO e marketing de conteúdo. Crie um artigo completo e otimizado para SEO em ${localeNames[locale]}.
+  const extraInstructions = instructions?.trim()
+    ? `\n**INSTRUÇÕES ADICIONAIS DO EDITOR:**\n${instructions}\n`
+    : "";
+
+  return `Você é um especialista sênior em SEO, marketing de conteúdo e monetização digital. Crie um artigo completo, otimizado para SEO em ${localeNames[locale]}.
 
 **Keyword principal:** "${keyword}"
 **Categoria:** ${category}
-**Tom:** ${toneGuides[tone as keyof typeof toneGuides] || toneGuides.professional}
+**Tom:** ${toneGuides[tone] || toneGuides.professional}
+${extraInstructions}
+**REQUISITOS OBRIGATÓRIOS:**
+1. Título H1 otimizado com a keyword (55-65 caracteres)
+2. Meta title SEO (50-60 caracteres)
+3. Meta description persuasiva (150-160 caracteres)
+4. Artigo completo de 2000-3000 palavras em Markdown
+5. Estrutura: Introdução impactante → 4-6 seções H2 com subseções H3 → Conclusão com CTA forte
+6. FAQ com 5-7 perguntas otimizadas para featured snippets do Google
+7. Linguagem natural, sem jargão desnecessário, fluente e envolvente
+8. Mencionar ferramentas/produtos específicos reais (oportunidades de links de afiliado)
+9. CTA claro e persuasivo no final direcionando para ação
+10. Prompt de imagem detalhado para geração visual
 
-**REQUISITOS DO ARTIGO:**
-1. Título otimizado com a keyword (60-65 caracteres)
-2. Meta description (150-160 caracteres)
-3. Artigo de 2000-3000 palavras
-4. Estrutura: Introdução → H2 com subseções → Conclusão com CTA
-5. Incluir FAQ com 5 perguntas (para featured snippets)
-6. Linguagem natural, sem jargão excessivo
-7. Mencionar produtos/ferramentas específicas (para links de afiliado)
-8. CTA claro no final (para conversão)
-
-**FORMATO DE RESPOSTA (JSON):**
+**FORMATO DE RESPOSTA — SOMENTE JSON, sem explicações:**
 \`\`\`json
 {
-  "title": "Título do artigo",
+  "title": "Título do artigo (H1)",
   "metaTitle": "Meta title SEO",
   "metaDescription": "Meta description SEO",
-  "excerpt": "Resumo de 1-2 frases",
-  "content": "Conteúdo completo em Markdown",
+  "excerpt": "Resumo atrativo de 2-3 frases para listagens",
+  "content": "Conteúdo completo em Markdown com headers, listas, etc.",
   "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
-  "imagePrompt": "Prompt para geração de imagem: tema, cores, estilo visual",
-  "affiliateKeywords": ["produto1", "produto2"],
+  "imagePrompt": "Prompt detalhado em inglês para geração de imagem de capa profissional",
+  "affiliateKeywords": ["produto mencionado 1", "produto mencionado 2"],
   "wordCount": 2500,
   "readTime": 12
 }
-\`\`\`
-
-Gere APENAS o JSON, sem texto adicional.`;
+\`\`\``;
 }
 
-async function generateImageWithGemini(
+async function generateImageWithImagen(
   ai: GoogleGenAI,
   prompt: string
 ): Promise<string | null> {
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-preview-image-generation",
-      contents: `Create a professional blog thumbnail image for an article about: ${prompt}. Dark tech aesthetic, modern design, no text overlay, high quality, 16:9 ratio.`,
+    const response = await ai.models.generateImages({
+      model: "imagen-3.0-generate-002",
+      prompt: `Professional blog thumbnail for an article about: ${prompt}. Dark tech aesthetic, modern minimalist design, no text overlay, cinematic lighting, high quality, 16:9 ratio.`,
       config: {
-        responseModalities: [Modality.TEXT, Modality.IMAGE],
+        numberOfImages: 1,
+        aspectRatio: "16:9",
       },
     });
 
-    for (const part of response.candidates?.[0]?.content?.parts ?? []) {
-      if (part.inlineData?.mimeType?.startsWith("image/")) {
-        const base64 = part.inlineData.data;
-        return `data:${part.inlineData.mimeType};base64,${base64}`;
-      }
-    }
-    return null;
+    const imageBytes = response.generatedImages?.[0]?.image?.imageBytes;
+    if (!imageBytes) return null;
+    return `data:image/png;base64,${imageBytes}`;
   } catch {
     return null;
   }
@@ -83,46 +85,53 @@ async function generateImageWithGemini(
 
 export async function POST(request: NextRequest) {
   try {
-    const { keyword, category, locale, tone, generateImage: genImage } =
+    const { keyword, category, locale, tone, generateImage: genImage, instructions } =
       await request.json();
 
     const geminiKey = process.env.GEMINI_API_KEY;
     if (!geminiKey) {
       return NextResponse.json(
-        { error: "GEMINI_API_KEY não configurada. Adicione no arquivo .env.local" },
+        { error: "GEMINI_API_KEY não configurada no .env.local" },
         { status: 400 }
       );
     }
 
     const ai = new GoogleGenAI({ apiKey: geminiKey });
 
-    // Gera conteúdo com Gemini
+    // Gera conteúdo com Gemini 2.0 Flash
     const textResponse = await ai.models.generateContent({
       model: "gemini-2.0-flash",
-      contents: buildArticlePrompt(keyword, category, locale, tone),
+      contents: buildArticlePrompt(keyword, category, locale, tone, instructions || ""),
       config: {
-        temperature: 0.7,
+        temperature: 0.75,
         maxOutputTokens: 8192,
       },
     });
 
-    const rawContent = textResponse.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+    const rawContent = textResponse.text ?? "";
 
-    // Parse JSON da resposta
+    // Parse JSON da resposta (aceita com ou sem bloco de código)
     const jsonMatch = rawContent.match(/```json\n?([\s\S]*?)\n?```/);
-    const jsonStr = jsonMatch ? jsonMatch[1] : rawContent;
+    const jsonStr = jsonMatch ? jsonMatch[1] : rawContent.trim();
 
-    let articleData;
+    let articleData: Record<string, unknown>;
     try {
       articleData = JSON.parse(jsonStr);
     } catch {
-      articleData = JSON.parse(rawContent);
+      // Última tentativa: remove possível lixo antes/depois do JSON
+      const firstBrace = rawContent.indexOf("{");
+      const lastBrace = rawContent.lastIndexOf("}");
+      if (firstBrace !== -1 && lastBrace !== -1) {
+        articleData = JSON.parse(rawContent.slice(firstBrace, lastBrace + 1));
+      } else {
+        throw new Error("Resposta da IA não é um JSON válido. Tente novamente.");
+      }
     }
 
-    // Gera imagem com Gemini se solicitado
+    // Gera imagem com Imagen 3 se solicitado
     let imageUrl: string | null = null;
     if (genImage && articleData.imagePrompt) {
-      imageUrl = await generateImageWithGemini(ai, articleData.imagePrompt);
+      imageUrl = await generateImageWithImagen(ai, articleData.imagePrompt as string);
     }
 
     return NextResponse.json({
@@ -132,7 +141,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: unknown) {
     console.error("Content generation error:", error);
-    const message = error instanceof Error ? error.message : "Erro na geração";
+    const message = error instanceof Error ? error.message : "Erro na geração de conteúdo";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
