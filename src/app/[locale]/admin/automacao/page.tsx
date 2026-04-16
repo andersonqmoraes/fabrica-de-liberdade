@@ -140,8 +140,19 @@ export default function AdminAutomacaoPage() {
       });
 
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Falha na geração");
+        let errorMsg = `Erro ${res.status} na API`;
+        try {
+          const contentType = res.headers.get("content-type") || "";
+          if (contentType.includes("application/json")) {
+            const err = await res.json();
+            errorMsg = err.error || errorMsg;
+          } else {
+            errorMsg = res.status === 500
+              ? "Erro 500 — verifique se GEMINI_API_KEY está configurada nas variáveis de ambiente da Vercel"
+              : `Erro ${res.status}`;
+          }
+        } catch { /* mantém o errorMsg padrão */ }
+        throw new Error(errorMsg);
       }
 
       const data = await res.json();
@@ -228,8 +239,19 @@ export default function AdminAutomacaoPage() {
       });
 
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Erro ao gerar ideias");
+        let errorMsg = `Erro ${res.status} na API`;
+        try {
+          const contentType = res.headers.get("content-type") || "";
+          if (contentType.includes("application/json")) {
+            const err = await res.json();
+            errorMsg = err.error || errorMsg;
+          } else {
+            errorMsg = res.status === 500
+              ? "Erro 500 — verifique se GEMINI_API_KEY está configurada nas variáveis de ambiente da Vercel (Settings → Environment Variables)"
+              : `Erro ${res.status}`;
+          }
+        } catch { /* mantém o errorMsg padrão */ }
+        throw new Error(errorMsg);
       }
 
       const data = await res.json();
