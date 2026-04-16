@@ -7,17 +7,14 @@ import { createArticle } from "@/lib/firebase/articles";
 import { slugify, calculateReadTime } from "@/lib/utils";
 import {
   Save,
-  Globe,
   Loader2,
-  Plus,
-  Trash2,
   Image,
   Tag,
   FileText,
-  Eye,
   Send,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ArticleSeoPanel } from "@/components/admin/ArticleSeoPanel";
 import type { ArticleCategory, ArticleStatus, Locale } from "@/types";
 
 const LOCALES: { code: Locale; label: string; flag: string }[] = [
@@ -25,6 +22,15 @@ const LOCALES: { code: Locale; label: string; flag: string }[] = [
   { code: "en", label: "English", flag: "🇺🇸" },
   { code: "es", label: "Español", flag: "🇪🇸" },
 ];
+
+type TranslationState = {
+  title: string;
+  excerpt: string;
+  content: string;
+  metaTitle: string;
+  metaDescription: string;
+  focusKeyword: string;
+};
 
 export default function NewArticlePage() {
   const t = useTranslations("admin");
@@ -42,12 +48,10 @@ export default function NewArticlePage() {
   const [hasAdsense, setHasAdsense] = useState(true);
 
   // Translations
-  const [translations, setTranslations] = useState<
-    Record<Locale, { title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string }>
-  >({
-    "pt-BR": { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
-    en: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
-    es: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
+  const [translations, setTranslations] = useState<Record<Locale, TranslationState>>({
+    "pt-BR": { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "", focusKeyword: "" },
+    en: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "", focusKeyword: "" },
+    es: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "", focusKeyword: "" },
   });
 
   function updateTranslation(locale: Locale, field: string, value: string) {
@@ -59,6 +63,7 @@ export default function NewArticlePage() {
 
   const current = translations[activeLocale];
   const mainTitle = translations["pt-BR"].title || translations.en.title;
+  const generatedSlug = slugify(mainTitle);
 
   async function handleSave(publish = false) {
     if (!mainTitle) {
@@ -80,7 +85,7 @@ export default function NewArticlePage() {
       );
 
       await createArticle({
-        slug: slugify(mainTitle),
+        slug: generatedSlug,
         status: publish ? "published" : status,
         translations: filledTranslations,
         category,
@@ -112,7 +117,7 @@ export default function NewArticlePage() {
           </h1>
           {mainTitle && (
             <p className="text-gray-600 text-sm font-mono">
-              slug: {slugify(mainTitle)}
+              slug: {generatedSlug}
             </p>
           )}
         </div>
@@ -158,7 +163,7 @@ export default function NewArticlePage() {
             ))}
           </div>
 
-          {/* Title */}
+          {/* Title + Content */}
           <div className="card p-5 space-y-4">
             <div>
               <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 block">
@@ -167,10 +172,10 @@ export default function NewArticlePage() {
               <input
                 value={current.title}
                 onChange={(e) => updateTranslation(activeLocale, "title", e.target.value)}
-                placeholder="Título otimizado para SEO (60-65 caracteres)"
+                placeholder="Título otimizado para SEO (50-65 caracteres)"
                 className="input text-lg font-medium"
               />
-              <div className="text-xs text-gray-700 mt-1.5 text-right">
+              <div className={cn("text-xs mt-1.5 text-right", current.title.length > 65 ? "text-red-400" : "text-gray-700")}>
                 {current.title.length}/65 chars
               </div>
             </div>
@@ -199,41 +204,36 @@ export default function NewArticlePage() {
                 className="input font-mono text-sm resize-none"
                 rows={20}
               />
-              <div className="text-xs text-gray-700 mt-1.5">
-                ~{calculateReadTime(current.content)} min de leitura
+              <div className="flex justify-between text-xs text-gray-700 mt-1.5">
+                <span>~{calculateReadTime(current.content)} min de leitura</span>
+                <span>{current.content.split(/\s+/).filter(Boolean).length} palavras</span>
               </div>
             </div>
           </div>
 
-          {/* SEO */}
-          <div className="card p-5 space-y-4">
-            <h3 className="font-semibold text-gray-300 flex items-center gap-2">
-              <Globe className="w-4 h-4 text-brand-400" />
-              SEO
-            </h3>
-            <div>
-              <label className="text-xs font-medium text-gray-500 mb-2 block">Meta Title</label>
-              <input
-                value={current.metaTitle}
-                onChange={(e) => updateTranslation(activeLocale, "metaTitle", e.target.value)}
-                placeholder="Meta title (deixe vazio para usar o título)"
-                className="input text-sm"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-gray-500 mb-2 block">Meta Description</label>
-              <textarea
-                value={current.metaDescription}
-                onChange={(e) => updateTranslation(activeLocale, "metaDescription", e.target.value)}
-                placeholder="Meta description persuasiva (150-160 chars)"
-                className="input text-sm resize-none"
-                rows={2}
-              />
-              <div className="text-xs text-gray-700 mt-1 text-right">
-                {current.metaDescription.length}/160 chars
-              </div>
-            </div>
-          </div>
+          {/* SEO Panel */}
+          <ArticleSeoPanel
+            data={{
+              title: current.title,
+              metaTitle: current.metaTitle,
+              metaDescription: current.metaDescription,
+              focusKeyword: current.focusKeyword,
+              content: current.content,
+              excerpt: current.excerpt,
+              tags,
+              featuredImage,
+              slug: generatedSlug,
+            }}
+            onChange={(field, value) => {
+              if (field === "tags") {
+                setTags(value);
+              } else if (field === "featuredImage") {
+                setFeaturedImage(value);
+              } else {
+                updateTranslation(activeLocale, field, value);
+              }
+            }}
+          />
         </div>
 
         {/* Sidebar */}
@@ -281,7 +281,7 @@ export default function NewArticlePage() {
                 onChange={(e) => setHasAdsense(e.target.checked)}
                 className="w-4 h-4 accent-brand-500"
               />
-              <span className="text-sm text-gray-400">Ativar AdSense neste artigo</span>
+              <span className="text-sm text-gray-400">Ativar AdSense</span>
             </label>
           </div>
 
@@ -298,6 +298,7 @@ export default function NewArticlePage() {
               className="input text-sm"
             />
             {featuredImage && (
+              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={featuredImage}
                 alt="Preview"

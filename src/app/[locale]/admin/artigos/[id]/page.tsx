@@ -7,7 +7,6 @@ import { getArticleById, updateArticle } from "@/lib/firebase/articles";
 import { slugify, calculateReadTime } from "@/lib/utils";
 import {
   Save,
-  Globe,
   Loader2,
   Image,
   Tag,
@@ -17,6 +16,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ArticleSeoPanel } from "@/components/admin/ArticleSeoPanel";
 import { Link } from "@/i18n/routing";
 import type { Article, ArticleCategory, ArticleStatus, Locale } from "@/types";
 
@@ -50,11 +50,11 @@ export default function EditArticlePage() {
 
   // Translations
   const [translations, setTranslations] = useState<
-    Record<Locale, { title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string }>
+    Record<Locale, { title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string; focusKeyword: string }>
   >({
-    "pt-BR": { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
-    en: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
-    es: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
+    "pt-BR": { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "", focusKeyword: "" },
+    en: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "", focusKeyword: "" },
+    es: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "", focusKeyword: "" },
   });
 
   useEffect(() => {
@@ -75,9 +75,9 @@ export default function EditArticlePage() {
 
         // Populate translations
         const filled: typeof translations = {
-          "pt-BR": { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
-          en: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
-          es: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
+          "pt-BR": { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "", focusKeyword: "" },
+          en: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "", focusKeyword: "" },
+          es: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "", focusKeyword: "" },
         };
         for (const locale of ["pt-BR", "en", "es"] as Locale[]) {
           const tr = data.translations[locale];
@@ -88,6 +88,7 @@ export default function EditArticlePage() {
               content: tr.content || "",
               metaTitle: tr.metaTitle || "",
               metaDescription: tr.metaDescription || "",
+              focusKeyword: tr.focusKeyword || "",
             };
           }
         }
@@ -307,35 +308,29 @@ export default function EditArticlePage() {
             </div>
           </div>
 
-          {/* SEO */}
-          <div className="card p-5 space-y-4">
-            <h3 className="font-semibold text-gray-300 flex items-center gap-2">
-              <Globe className="w-4 h-4 text-brand-400" />
-              SEO
-            </h3>
-            <div>
-              <label className="text-xs font-medium text-gray-500 mb-2 block">Meta Title</label>
-              <input
-                value={current.metaTitle}
-                onChange={(e) => updateTranslation(activeLocale, "metaTitle", e.target.value)}
-                placeholder="Meta title (deixe vazio para usar o título)"
-                className="input text-sm"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-gray-500 mb-2 block">Meta Description</label>
-              <textarea
-                value={current.metaDescription}
-                onChange={(e) => updateTranslation(activeLocale, "metaDescription", e.target.value)}
-                placeholder="Meta description persuasiva (150-160 chars)"
-                className="input text-sm resize-none"
-                rows={2}
-              />
-              <div className="text-xs text-gray-700 mt-1 text-right">
-                {current.metaDescription.length}/160 chars
-              </div>
-            </div>
-          </div>
+          {/* SEO Panel */}
+          <ArticleSeoPanel
+            data={{
+              title: current.title,
+              metaTitle: current.metaTitle,
+              metaDescription: current.metaDescription,
+              focusKeyword: current.focusKeyword,
+              content: current.content,
+              excerpt: current.excerpt,
+              tags,
+              featuredImage,
+              slug,
+            }}
+            onChange={(field, value) => {
+              if (field === "tags") {
+                setTags(value);
+              } else if (field === "featuredImage") {
+                setFeaturedImage(value);
+              } else {
+                updateTranslation(activeLocale, field, value);
+              }
+            }}
+          />
 
           {/* Slug */}
           <div className="card p-5 space-y-3">

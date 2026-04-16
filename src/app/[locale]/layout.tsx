@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import type { Locale } from "@/types";
+import { getSiteConfig } from "@/lib/firebase/siteConfig";
 import "../globals.css";
 
 const inter = Inter({
@@ -43,23 +44,43 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "seo.homePage" });
   const tMeta = await getTranslations({ locale, namespace: "metadata" });
 
+  // Pull live config from Firestore, fall back to i18n strings
+  const siteConfig = await getSiteConfig().catch(() => null);
+
+  const siteUrl =
+    siteConfig?.siteUrl ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "https://fabricadeliberdade.com.br";
+
+  const siteName = siteConfig?.siteName || tMeta("siteName");
+  const description =
+    siteConfig?.seo?.defaultMetaDescription || t("description");
+  const ogImage = siteConfig?.seo?.defaultOgImage || "/images/og-default.jpg";
+  const twitterHandle = siteConfig?.seo?.twitterHandle || "@fabricadeliberdade";
+  const googleVerification = siteConfig?.seo?.googleVerification || undefined;
+
   return {
     title: {
-      default: t("title"),
-      template: `%s | ${tMeta("siteName")}`,
+      default: siteConfig?.seo?.defaultMetaTitle || t("title"),
+      template: `%s | ${siteName}`,
     },
-    description: t("description"),
+    description,
     keywords: tMeta("siteKeywords"),
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL || "https://fabricadeliberdade.com.br"
-    ),
+    metadataBase: new URL(siteUrl),
+    ...(googleVerification && {
+      verification: { google: googleVerification },
+    }),
     openGraph: {
       type: "website",
-      siteName: tMeta("siteName"),
+      siteName,
+      description,
       locale: locale === "pt-BR" ? "pt_BR" : locale === "en" ? "en_US" : "es_ES",
+      images: [{ url: ogImage, width: 1200, height: 630, alt: siteName }],
     },
     twitter: {
       card: "summary_large_image",
+      site: twitterHandle,
+      creator: twitterHandle,
     },
     robots: {
       index: true,
@@ -73,11 +94,11 @@ export async function generateMetadata({
       },
     },
     alternates: {
-      canonical: process.env.NEXT_PUBLIC_SITE_URL,
+      canonical: siteUrl,
       languages: {
-        "pt-BR": `${process.env.NEXT_PUBLIC_SITE_URL}`,
-        en: `${process.env.NEXT_PUBLIC_SITE_URL}/en`,
-        es: `${process.env.NEXT_PUBLIC_SITE_URL}/es`,
+        "pt-BR": siteUrl,
+        en: `${siteUrl}/en`,
+        es: `${siteUrl}/es`,
       },
     },
   };
@@ -94,6 +115,23 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages();
+  const siteConfig = await getSiteConfig().catch(() => null);
+
+  const siteUrl =
+    siteConfig?.siteUrl ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "https://fabricadeliberdade.com.br";
+
+  const siteNameLd = siteConfig?.siteName || "Fábrica de Liberdade";
+  const adsenseId =
+    siteConfig?.adsenseClientId || process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID;
+
+  const sameAs = [
+    siteConfig?.socialLinks?.instagram,
+    siteConfig?.socialLinks?.youtube,
+    siteConfig?.socialLinks?.twitter,
+    siteConfig?.socialLinks?.linkedin,
+  ].filter(Boolean);
 
   return (
     <html
@@ -103,10 +141,10 @@ export default async function LocaleLayout({
     >
       <head>
         {/* Google AdSense */}
-        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
+        {adsenseId && (
           <script
             async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID}`}
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseId}`}
             crossOrigin="anonymous"
           />
         )}
@@ -117,13 +155,10 @@ export default async function LocaleLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "Fábrica de Liberdade",
-              url: "https://fabricadeliberdade.com.br",
-              logo: "https://fabricadeliberdade.com.br/images/logo.png",
-              sameAs: [
-                "https://www.instagram.com/fabricadeliberdade",
-                "https://www.youtube.com/@fabricadeliberdade",
-              ],
+              name: siteNameLd,
+              url: siteUrl,
+              logo: `${siteUrl}/images/Branco.png`,
+              ...(sameAs.length > 0 && { sameAs }),
             }),
           }}
         />

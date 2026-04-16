@@ -9,9 +9,9 @@ interface LogoProps {
 }
 
 const sizeMap = {
-  sm: { icon: 44, fullH: 44 },
-  md: { icon: 52, fullH: 52 },
-  lg: { icon: 64, fullH: 64 },
+  sm: { icon: 52, fullH: 52 },
+  md: { icon: 60, fullH: 60 },
+  lg: { icon: 72, fullH: 72 },
 };
 
 export function Logo({ variant = "full", size = "md", className, dark = false }: LogoProps) {
