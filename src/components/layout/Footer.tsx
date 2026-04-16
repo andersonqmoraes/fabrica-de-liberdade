@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
+import { Logo } from "./Logo";
 import {
-  Zap,
   Instagram,
   Youtube,
   Twitter,
@@ -22,18 +22,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
           {/* Brand column */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2.5 w-fit group mb-4">
-              <div className="w-9 h-9 bg-gradient-to-br from-brand-400 to-brand-600 rounded-lg flex items-center justify-center shadow-brand">
-                <Zap className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-display font-bold text-white text-sm">
-                  Fábrica de
-                </span>
-                <span className="font-display font-bold text-brand-400 text-sm">
-                  Liberdade
-                </span>
-              </div>
+            <Link href="/" className="w-fit block mb-4">
+              <Logo size="sm" />
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
               {t("tagline")}

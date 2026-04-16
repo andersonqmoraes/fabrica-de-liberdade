@@ -6,6 +6,7 @@ import { Link, usePathname } from "@/i18n/routing";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { Menu, X, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Logo } from "./Logo";
 
 export function Header() {
   const t = useTranslations("nav");
@@ -38,18 +39,8 @@ export function Header() {
       <div className="container-main">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 bg-gradient-to-br from-brand-400 to-brand-600 rounded-lg flex items-center justify-center shadow-brand group-hover:shadow-brand-lg transition-all duration-300">
-              <Zap className="w-5 h-5 text-white" />
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="font-display font-bold text-white text-sm tracking-tight">
-                Fábrica de
-              </span>
-              <span className="font-display font-bold text-brand-400 text-sm tracking-tight">
-                Liberdade
-              </span>
-            </div>
+          <Link href="/" className="group">
+            <Logo size="sm" />
           </Link>
 
           {/* Nav Desktop */}

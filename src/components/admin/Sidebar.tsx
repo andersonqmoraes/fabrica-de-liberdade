@@ -12,11 +12,11 @@ import {
   Bot,
   Settings,
   LogOut,
-  Zap,
   ChevronRight,
   ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/layout/Logo";
 import type React from "react";
 
 interface NavItem {
@@ -74,18 +74,8 @@ export function AdminSidebar() {
     <aside className="w-64 min-h-screen bg-dark-700 border-r border-dark-400 flex flex-col">
       {/* Logo */}
       <div className="p-6 border-b border-dark-400">
-        <Link href="/" className="flex items-center gap-2.5 group" target="_blank">
-          <div className="w-9 h-9 bg-gradient-to-br from-brand-400 to-brand-600 rounded-lg flex items-center justify-center shadow-brand">
-            <Zap className="w-5 h-5 text-white" />
-          </div>
-          <div className="flex flex-col leading-none">
-            <span className="font-display font-bold text-white text-sm">
-              Fábrica de
-            </span>
-            <span className="font-display font-bold text-brand-400 text-sm">
-              Liberdade
-            </span>
-          </div>
+        <Link href="/" className="block" target="_blank">
+          <Logo size="sm" />
         </Link>
         <div className="mt-3 flex items-center gap-1.5 text-xs text-gray-600">
           <div className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-pulse" />

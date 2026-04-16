@@ -1,0 +1,23 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer diamond -->
+  <path d="M100 8 L192 100 L100 192 L8 100 Z"
+        stroke="currentColor" stroke-width="9" fill="none" stroke-linejoin="miter"/>
+  <!-- Inner frame — right upper arm (top-right side of inner diamond, leaving gap at top-left/bottom-right) -->
+  <!-- Inner diamond left vertical side -->
+  <path d="M100 36 L36 100 L100 164"
+        stroke="currentColor" stroke-width="9" fill="none" stroke-linejoin="miter" stroke-linecap="square"/>
+  <!-- Inner diamond right vertical side -->
+  <path d="M100 36 L164 100 L100 164"
+        stroke="currentColor" stroke-width="9" fill="none" stroke-linejoin="miter" stroke-linecap="square"/>
+  <!-- Horizontal crossbar top (F bar) — connects inner diamond's top-right angle toward outer -->
+  <line x1="100" y1="36" x2="164" y2="36"
+        stroke="currentColor" stroke-width="9" stroke-linecap="square"/>
+  <!-- Horizontal crossbar bottom (mirrored F bar) -->
+  <line x1="36" y1="164" x2="100" y2="164"
+        stroke="currentColor" stroke-width="9" stroke-linecap="square"/>
+  <!-- Short mid crossbars (inner F details) -->
+  <line x1="100" y1="68" x2="132" y2="68"
+        stroke="currentColor" stroke-width="9" stroke-linecap="square"/>
+  <line x1="68" y1="132" x2="100" y2="132"
+        stroke="currentColor" stroke-width="9" stroke-linecap="square"/>
+</svg>

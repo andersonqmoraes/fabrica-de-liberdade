@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "@/i18n/routing";
+import { useRouter, usePathname } from "@/i18n/routing";
 import { onAuthChange } from "@/lib/firebase/auth";
 import { AdminSidebar } from "@/components/admin/Sidebar";
 import { Loader2 } from "lucide-react";
@@ -12,20 +12,28 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [checking, setChecking] = useState(true);
   const [authed, setAuthed] = useState(false);
+
+  const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
     const unsub = onAuthChange((user) => {
       if (user) {
         setAuthed(true);
-      } else {
+      } else if (!isLoginPage) {
         router.push("/admin/login");
       }
       setChecking(false);
     });
     return () => unsub();
-  }, [router]);
+  }, [router, isLoginPage]);
+
+  // A página de login nunca precisa de autenticação — renderiza direto
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
 
   if (checking) {
     return (
