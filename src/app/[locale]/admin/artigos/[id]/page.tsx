@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ArticleSeoPanel } from "@/components/admin/ArticleSeoPanel";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { Link } from "@/i18n/routing";
 import type { Article, ArticleCategory, ArticleStatus, Locale } from "@/types";
 
@@ -531,20 +532,10 @@ export default function EditArticlePage() {
               <Image className="w-4 h-4" />
               Imagem de capa
             </h3>
-            <input
+            <ImageUpload
               value={featuredImage}
-              onChange={(e) => setFeaturedImage(e.target.value)}
-              placeholder="URL da imagem..."
-              className="input text-sm"
+              onChange={(url) => setFeaturedImage(url)}
             />
-            {featuredImage && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={featuredImage}
-                alt="Preview"
-                className="w-full h-32 object-cover rounded-xl"
-              />
-            )}
           </div>
 
           {/* Tags */}
