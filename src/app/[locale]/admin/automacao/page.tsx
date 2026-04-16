@@ -284,7 +284,7 @@ export default function AdminAutomacaoPage() {
         </div>
         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full text-green-400 text-xs font-medium">
           <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-          Gemini 2.0 Flash
+          Gemini 3 Flash
         </div>
       </div>
 
