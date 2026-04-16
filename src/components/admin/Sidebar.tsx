@@ -15,6 +15,9 @@ import {
   ChevronRight,
   ExternalLink,
   Mail,
+  Wrench,
+  Users,
+  Info,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/layout/Logo";
@@ -50,9 +53,34 @@ const navItems: NavItem[] = [
     labelKey: "automation",
   },
   {
+    href: "/admin/ferramentas",
+    icon: Wrench,
+    labelKey: "tools",
+  },
+  {
+    href: "/admin/newsletter",
+    icon: Users,
+    labelKey: "newsletter",
+  },
+  {
+    href: "/admin/ferramentas",
+    icon: Wrench,
+    labelKey: "tools",
+  },
+  {
+    href: "/admin/newsletter",
+    icon: Users,
+    labelKey: "newsletter",
+  },
+  {
     href: "/admin/mensagens",
     icon: Mail,
     labelKey: "messages",
+  },
+  {
+    href: "/admin/sobre",
+    icon: Info,
+    labelKey: "about",
   },
   {
     href: "/admin/configuracoes",

@@ -12,6 +12,7 @@ import {
   Tag,
   FileText,
   Send,
+  Languages,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ArticleSeoPanel } from "@/components/admin/ArticleSeoPanel";
@@ -39,6 +40,8 @@ export default function NewArticlePage() {
   const [activeLocale, setActiveLocale] = useState<Locale>("pt-BR");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [translating, setTranslating] = useState<Locale | null>(null);
+  const [translateError, setTranslateError] = useState("");
 
   // Metadata
   const [category, setCategory] = useState<ArticleCategory>("ai-tools");
@@ -59,6 +62,31 @@ export default function NewArticlePage() {
       ...prev,
       [locale]: { ...prev[locale], [field]: value },
     }));
+  }
+
+  async function handleTranslate(targetLocale: Locale) {
+    const src = translations[activeLocale];
+    if (!src.title || !src.content) {
+      setTranslateError("Preencha o título e conteúdo na aba atual antes de traduzir.");
+      return;
+    }
+    setTranslating(targetLocale);
+    setTranslateError("");
+    try {
+      const res = await fetch("/api/automation/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...src, sourceLocale: activeLocale, targetLocale }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erro ao traduzir");
+      setTranslations((prev) => ({ ...prev, [targetLocale]: { ...prev[targetLocale], ...data.translation } }));
+      setActiveLocale(targetLocale);
+    } catch (err: unknown) {
+      setTranslateError(err instanceof Error ? err.message : "Erro ao traduzir");
+    } finally {
+      setTranslating(null);
+    }
   }
 
   const current = translations[activeLocale];
@@ -139,11 +167,18 @@ export default function NewArticlePage() {
         </div>
       )}
 
+      {translateError && (
+        <div className="flex items-center justify-between bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-orange-400 text-sm">
+          <span>{translateError}</span>
+          <button onClick={() => setTranslateError("")} className="ml-3 opacity-70 hover:opacity-100">✕</button>
+        </div>
+      )}
+
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Main editor */}
         <div className="lg:col-span-2 space-y-5">
           {/* Locale tabs */}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {LOCALES.map((l) => (
               <button
                 key={l.code}
@@ -161,6 +196,24 @@ export default function NewArticlePage() {
                 )}
               </button>
             ))}
+            <div className="ml-auto flex items-center gap-2">
+              <span className="text-xs text-gray-600">Traduzir para:</span>
+              {LOCALES.filter((l) => l.code !== activeLocale).map((l) => (
+                <button
+                  key={l.code}
+                  onClick={() => handleTranslate(l.code)}
+                  disabled={translating !== null}
+                  title={`Traduzir para ${l.label} com Gemini`}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-600 border border-dark-400 text-gray-400 hover:border-brand-500/40 hover:text-brand-400 transition-all disabled:opacity-50"
+                >
+                  {translating === l.code
+                    ? <Loader2 className="w-3 h-3 animate-spin" />
+                    : <Languages className="w-3 h-3" />
+                  }
+                  {l.flag} {l.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Title + Content */}

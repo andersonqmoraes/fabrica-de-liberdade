@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "@/i18n/routing";
 import { Zap, Target, Users, TrendingUp, ArrowRight, Bot, BookOpen, Shield } from "lucide-react";
+import { getSobreData } from "@/lib/firebase/sobre";
 import type { Locale } from "@/types";
 
 interface Props {
@@ -76,10 +77,12 @@ export default async function AboutPage({ params }: Props) {
   const { locale } = await params;
   const l = locale as Locale;
 
+  const sobreData = await getSobreData();
+
   const headlines: Record<Locale, { h1: string; sub: string }> = {
-    "pt-BR": { h1: "Nossa missão é sua liberdade", sub: "A Fábrica de Liberdade nasceu com um propósito simples: ajudar pessoas comuns a usarem tecnologia e inteligência artificial para conquistar mais tempo, mais dinheiro e mais escolhas." },
-    en: { h1: "Our mission is your freedom", sub: "Freedom Factory was born with a simple purpose: to help ordinary people use technology and artificial intelligence to gain more time, more money, and more choices." },
-    es: { h1: "Nuestra misión es tu libertad", sub: "La Fábrica de Libertad nació con un propósito simple: ayudar a personas comunes a usar tecnología e inteligencia artificial para ganar más tiempo, más dinero y más opciones." },
+    "pt-BR": { h1: sobreData.headline["pt-BR"], sub: sobreData.subheadline["pt-BR"] },
+    en: { h1: sobreData.headline.en, sub: sobreData.subheadline.en },
+    es: { h1: sobreData.headline.es, sub: sobreData.subheadline.es },
   };
 
   const storyTitle: Record<Locale, string> = {
@@ -89,9 +92,9 @@ export default async function AboutPage({ params }: Props) {
   };
 
   const storyText: Record<Locale, string> = {
-    "pt-BR": "Tudo começou com uma pergunta simples: por que as ferramentas de IA e produtividade que estão transformando empresas bilionárias ainda são um mistério para a maioria das pessoas?\n\nFundada em 2024, a Fábrica de Liberdade foi criada para preencher esse gap. Produzimos conteúdo em português, inglês e espanhol para que qualquer pessoa no mundo lusófono e hispânico possa acessar o mesmo conhecimento que os grandes players globais.\n\nHoje, ajudamos mais de 50.000 leitores mensais a dominar ferramentas de IA, aumentar sua produtividade e criar novas fontes de renda utilizando tecnologia.",
-    en: "It all started with a simple question: why are the AI and productivity tools transforming billion-dollar companies still a mystery to most people?\n\nFounded in 2024, Freedom Factory was created to fill this gap. We produce content in Portuguese, English, and Spanish so that anyone in the Lusophone and Hispanic world can access the same knowledge as the global players.\n\nToday, we help over 50,000 monthly readers master AI tools, increase their productivity, and create new income streams using technology.",
-    es: "Todo comenzó con una pregunta simple: ¿por qué las herramientas de IA y productividad que están transformando empresas billonarias siguen siendo un misterio para la mayoría de las personas?\n\nFundada en 2024, la Fábrica de Libertad fue creada para llenar este vacío. Producimos contenido en portugués, inglés y español para que cualquier persona en el mundo lusófono e hispánico pueda acceder al mismo conocimiento que los grandes jugadores globales.\n\nHoy, ayudamos a más de 50,000 lectores mensuales a dominar herramientas de IA, aumentar su productividad y crear nuevas fuentes de ingresos usando tecnología.",
+    "pt-BR": sobreData.story["pt-BR"],
+    en: sobreData.story.en,
+    es: sobreData.story.es,
   };
 
   const valuesTitle: Record<Locale, string> = {
@@ -146,10 +149,10 @@ export default async function AboutPage({ params }: Props) {
           <div className="container-main">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
               {[
-                { value: "50k+", label: { "pt-BR": "Leitores mensais", en: "Monthly readers", es: "Lectores mensuales" }, icon: Users },
-                { value: "500+", label: { "pt-BR": "Artigos publicados", en: "Published articles", es: "Artículos publicados" }, icon: BookOpen },
-                { value: "200+", label: { "pt-BR": "Ferramentas avaliadas", en: "Tools reviewed", es: "Herramientas evaluadas" }, icon: Bot },
-                { value: "3", label: { "pt-BR": "Idiomas", en: "Languages", es: "Idiomas" }, icon: TrendingUp },
+                { value: sobreData.stats.readers, label: { "pt-BR": "Leitores mensais", en: "Monthly readers", es: "Lectores mensuales" }, icon: Users },
+                { value: sobreData.stats.articles, label: { "pt-BR": "Artigos publicados", en: "Published articles", es: "Artículos publicados" }, icon: BookOpen },
+                { value: sobreData.stats.tools, label: { "pt-BR": "Ferramentas avaliadas", en: "Tools reviewed", es: "Herramientas evaluadas" }, icon: Bot },
+                { value: sobreData.stats.languages, label: { "pt-BR": "Idiomas", en: "Languages", es: "Idiomas" }, icon: TrendingUp },
               ].map(({ value, label, icon: Icon }) => (
                 <div key={value} className="card p-6">
                   <Icon className="w-6 h-6 text-brand-400 mx-auto mb-3" />

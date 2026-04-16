@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "@/i18n/routing";
+import { getTools, type Tool as FirestoreTool } from "@/lib/firebase/tools";
 import {
   Bot,
   Zap,
@@ -168,10 +169,18 @@ export default function ToolsPage({ params }: Props) {
   const { locale } = use(params);
   const l = locale as Locale;
   const [activeCategory, setActiveCategory] = useState("all");
+  const [dynamicTools, setDynamicTools] = useState<FirestoreTool[] | null>(null);
 
+  useEffect(() => {
+    getTools()
+      .then((list) => { if (list.length > 0) setDynamicTools(list.filter((t) => t.active)); })
+      .catch(() => {}); // fallback para hardcoded
+  }, []);
+
+  const allTools = dynamicTools ?? tools;
   const filteredTools = activeCategory === "all"
-    ? tools
-    : tools.filter((t) => t.category === activeCategory);
+    ? allTools
+    : allTools.filter((t) => t.category === activeCategory);
 
   const pageTitle: Record<Locale, string> = {
     "pt-BR": "Ferramentas recomendadas",
