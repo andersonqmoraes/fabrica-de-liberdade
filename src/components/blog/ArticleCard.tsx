@@ -39,15 +39,12 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
 
   const categoryColor = categoryColors[article.category] || categoryColors["ai-tools"];
   const categoryLabel = categoryLabels[article.category]?.[locale] || article.category;
+  const href = `/blog/${article.slug}` as const;
 
   if (variant === "featured") {
     return (
-      <Link
-        href={{ pathname: "/blog/[slug]", params: { slug: article.slug } }}
-        className="group block"
-      >
+      <Link href={href} className="group block">
         <article className="relative h-[500px] rounded-2xl overflow-hidden card">
-          {/* Image */}
           <div className="absolute inset-0">
             <Image
               src={article.featuredImage || "/images/placeholder.jpg"}
@@ -59,7 +56,6 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
             <div className="absolute inset-0 bg-gradient-to-t from-dark-900 via-dark-900/60 to-transparent" />
           </div>
 
-          {/* Content */}
           <div className="absolute bottom-0 left-0 right-0 p-8">
             <div className="flex items-center gap-3 mb-4">
               <span className={cn("badge border", categoryColor)}>
@@ -68,7 +64,7 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
               </span>
               {article.generatedByAI && (
                 <span className="badge bg-gold-500/20 text-gold-400 border border-gold-500/30">
-                  ✨ AI Generated
+                  ✨ AI Enhanced
                 </span>
               )}
             </div>
@@ -99,10 +95,7 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
 
   if (variant === "compact") {
     return (
-      <Link
-        href={{ pathname: "/blog/[slug]", params: { slug: article.slug } }}
-        className="group flex items-center gap-4 p-4 rounded-xl hover:bg-dark-600 transition-colors"
-      >
+      <Link href={href} className="group flex items-center gap-4 p-4 rounded-xl hover:bg-dark-600 transition-colors">
         <div className="relative w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
           <Image
             src={article.featuredImage || "/images/placeholder.jpg"}
@@ -135,10 +128,7 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
 
   if (variant === "horizontal") {
     return (
-      <Link
-        href={{ pathname: "/blog/[slug]", params: { slug: article.slug } }}
-        className="group block"
-      >
+      <Link href={href} className="group block">
         <article className="card flex gap-0 overflow-hidden">
           <div className="relative w-48 lg:w-64 flex-shrink-0">
             <Image
@@ -173,12 +163,8 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
 
   // Default card
   return (
-    <Link
-      href={{ pathname: "/blog/[slug]", params: { slug: article.slug } }}
-      className="group block h-full"
-    >
+    <Link href={href} className="group block h-full">
       <article className="card h-full flex flex-col">
-        {/* Image */}
         <div className="relative h-52 overflow-hidden">
           <Image
             src={article.featuredImage || "/images/placeholder.jpg"}
@@ -194,7 +180,6 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-6 flex flex-col flex-1">
           <h3 className="font-display font-bold text-lg text-gray-100 line-clamp-2 group-hover:text-brand-400 transition-colors mb-3 flex-1">
             {translation.title}
@@ -203,7 +188,6 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
             {translation.excerpt}
           </p>
 
-          {/* Footer */}
           <div className="flex items-center justify-between pt-4 border-t border-dark-400">
             <div className="flex items-center gap-3 text-gray-600 text-xs">
               <span className="flex items-center gap-1">

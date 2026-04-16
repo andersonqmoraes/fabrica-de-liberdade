@@ -20,23 +20,23 @@ import type { Article, ArticleCategory, ArticleStatus, Locale } from "@/types";
 
 const COLLECTION = "articles";
 
-// --- Helpers ---
-function toArticle(id: string, data: Record<string, unknown>): Article {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toArticle(id: string, data: Record<string, any>): Article {
   return {
     ...data,
     id,
     publishedAt:
       data.publishedAt instanceof Timestamp
         ? data.publishedAt.toDate().toISOString()
-        : (data.publishedAt as string),
+        : (data.publishedAt as string) || new Date().toISOString(),
     createdAt:
       data.createdAt instanceof Timestamp
         ? data.createdAt.toDate().toISOString()
-        : (data.createdAt as string),
+        : (data.createdAt as string) || new Date().toISOString(),
     updatedAt:
       data.updatedAt instanceof Timestamp
         ? data.updatedAt.toDate().toISOString()
-        : (data.updatedAt as string),
+        : (data.updatedAt as string) || new Date().toISOString(),
   } as Article;
 }
 
@@ -66,7 +66,8 @@ export async function getArticles(options?: {
   const q = query(collection(db, COLLECTION), ...constraints);
   const snapshot = await getDocs(q);
 
-  return snapshot.docs.map((d) => toArticle(d.id, d.data()));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return snapshot.docs.map((d: any) => toArticle(d.id, d.data()));
 }
 
 export async function getPublishedArticles(limitCount?: number): Promise<Article[]> {
@@ -81,7 +82,8 @@ export async function getFeaturedArticles(count = 3): Promise<Article[]> {
   ];
   const q = query(collection(db, COLLECTION), ...constraints);
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => toArticle(d.id, d.data()));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return snapshot.docs.map((d: any) => toArticle(d.id, d.data()));
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
@@ -112,8 +114,9 @@ export async function getRelatedArticles(
   const q = query(collection(db, COLLECTION), ...constraints);
   const snapshot = await getDocs(q);
   return snapshot.docs
-    .map((d) => toArticle(d.id, d.data()))
-    .filter((a) => a.id !== articleId)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .map((d: any) => toArticle(d.id, d.data()))
+    .filter((a: Article) => a.id !== articleId)
     .slice(0, count);
 }
 
@@ -171,7 +174,8 @@ export async function getArticleStats() {
   ]);
 
   const totalViews = all.docs.reduce(
-    (sum, d) => sum + ((d.data().views as number) || 0),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (sum: number, d: any) => sum + ((d.data().views as number) || 0),
     0
   );
 

@@ -38,7 +38,8 @@ export async function deleteMedia(path: string): Promise<void> {
 export async function listMedia(folder = "media"): Promise<string[]> {
   const folderRef = ref(storage, folder);
   const result = await listAll(folderRef);
-  return Promise.all(result.items.map((item) => getDownloadURL(item)));
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return Promise.all(result.items.map((item: any) => getDownloadURL(item)));
 }
 
 export async function getMediaUrl(path: string): Promise<string> {

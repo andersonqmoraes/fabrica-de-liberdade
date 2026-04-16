@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { getPublishedArticles } from "@/lib/firebase/articles";
+import type { Article } from "@/types";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://fabricadeliberdade.com.br";
 
 export async function GET() {
-  let articles;
+  let articles: Article[] = [];
   try {
     articles = await getPublishedArticles(200);
   } catch {

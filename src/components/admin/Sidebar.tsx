@@ -17,8 +17,16 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type React from "react";
 
-const navItems = [
+interface NavItem {
+  href: string;
+  icon: React.ElementType;
+  labelKey: string;
+  exact?: boolean;
+}
+
+const navItems: NavItem[] = [
   {
     href: "/admin",
     icon: LayoutDashboard,
