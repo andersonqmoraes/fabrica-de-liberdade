@@ -31,6 +31,7 @@ function buildArticlePrompt(
 **Keyword principal:** "${keyword}"
 **Categoria:** ${category}
 **Tom:** ${toneGuides[tone] || toneGuides.professional}
+**ANO DE REFERÊNCIA:** 2025/2026 — use sempre informações, ferramentas e tendências atuais. Nunca mencione 2024 como ano atual ou recente.
 ${extraInstructions}
 **REQUISITOS OBRIGATÓRIOS:**
 1. Título H1 otimizado com a keyword (55-65 caracteres)
@@ -40,7 +41,7 @@ ${extraInstructions}
 5. Estrutura: Introdução impactante → 4-6 seções H2 com subseções H3 → Conclusão com CTA forte
 6. FAQ com 5-7 perguntas otimizadas para featured snippets do Google
 7. Linguagem natural, sem jargão desnecessário, fluente e envolvente
-8. Mencionar ferramentas/produtos específicos reais (oportunidades de links de afiliado)
+8. Mencionar ferramentas/produtos específicos reais e atuais de 2025/2026 (oportunidades de links de afiliado)
 9. CTA claro e persuasivo no final direcionando para ação
 10. Prompt de imagem detalhado para geração visual
 
