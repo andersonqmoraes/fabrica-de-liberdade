@@ -77,7 +77,7 @@ Analise o portfólio acima e sugira 8 ideias de conteúdo estratégicas que:
 \`\`\``;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.0-flash-lite",
       contents: prompt,
       config: { temperature: 0.8, maxOutputTokens: 4096 },
     });
