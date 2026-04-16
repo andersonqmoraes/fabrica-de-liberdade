@@ -6,7 +6,7 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { NewsletterSection } from "@/components/home/NewsletterSection";
 import { ArticleCard } from "@/components/blog/ArticleCard";
 import { AdSenseUnit } from "@/components/monetization/AdSenseUnit";
-import { getPublishedArticles, getFeaturedArticles } from "@/lib/firebase/articles";
+import { getPublishedArticles, getFeaturedArticles, getArticleStats } from "@/lib/firebase/articles";
 import { Link } from "@/i18n/routing";
 import {
   Bot,
@@ -126,14 +126,16 @@ export default async function HomePage({ params }: HomePageProps) {
   const t = await getTranslations({ locale, namespace: "blog" });
   const tNav = await getTranslations({ locale, namespace: "nav" });
 
-  // Busca artigos do Firebase
+  // Busca artigos e stats do Firebase
   let featuredArticles: Awaited<ReturnType<typeof getFeaturedArticles>> = [];
   let latestArticles: Awaited<ReturnType<typeof getPublishedArticles>> = [];
+  let siteStats: Awaited<ReturnType<typeof getArticleStats>> | null = null;
 
   try {
-    [featuredArticles, latestArticles] = await Promise.all([
+    [featuredArticles, latestArticles, siteStats] = await Promise.all([
       getFeaturedArticles(3),
       getPublishedArticles(6),
+      getArticleStats(),
     ]);
   } catch {
     // Firebase ainda não configurado — exibe layout vazio
@@ -144,7 +146,7 @@ export default async function HomePage({ params }: HomePageProps) {
       <Header />
       <main>
         {/* HERO */}
-        <HeroSection />
+        <HeroSection stats={siteStats} />
 
         {/* CATEGORIAS */}
         <section className="section bg-dark-700">

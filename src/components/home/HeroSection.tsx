@@ -5,13 +5,24 @@ import { Link } from "@/i18n/routing";
 import { ArrowRight, Bot, Cpu, TrendingUp, Zap, ChevronDown } from "lucide-react";
 import { useEffect, useRef } from "react";
 
-const stats = [
-  { key: "articles", value: "500+", icon: Bot },
-  { key: "tools", value: "200+", icon: Cpu },
-  { key: "readers", value: "50k+", icon: TrendingUp },
-];
+interface HeroStats {
+  totalArticles?: number;
+  publishedArticles?: number;
+  totalViews?: number;
+}
 
-export function HeroSection() {
+interface HeroSectionProps {
+  stats?: HeroStats | null;
+}
+
+function formatStatValue(value: number | undefined, fallback: string): string {
+  if (!value) return fallback;
+  if (value >= 1000) return `${(value / 1000).toFixed(0)}k+`;
+  if (value > 100) return `${Math.floor(value / 10) * 10}+`;
+  return `${value}`;
+}
+
+export function HeroSection({ stats }: HeroSectionProps) {
   const t = useTranslations("hero");
   const glowRef = useRef<HTMLDivElement>(null);
 
@@ -27,6 +38,24 @@ export function HeroSection() {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+
+  const statItems = [
+    {
+      key: "articles",
+      value: formatStatValue(stats?.publishedArticles, "500+"),
+      icon: Bot,
+    },
+    {
+      key: "tools",
+      value: "200+",
+      icon: Cpu,
+    },
+    {
+      key: "readers",
+      value: formatStatValue(stats?.totalViews, "50k+"),
+      icon: TrendingUp,
+    },
+  ];
 
   return (
     <section
@@ -53,9 +82,7 @@ export function HeroSection() {
         className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl animate-float"
         style={{ animationDelay: "2s" }}
       />
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-500/3 rounded-full blur-3xl"
-      />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-500/3 rounded-full blur-3xl" />
 
       {/* Content */}
       <div className="relative z-10 container-main text-center pt-20">
@@ -91,7 +118,7 @@ export function HeroSection() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-lg mx-auto animate-fade-in">
-          {stats.map(({ key, value, icon: Icon }) => (
+          {statItems.map(({ key, value, icon: Icon }) => (
             <div key={key} className="text-center group">
               <div className="flex items-center justify-center mb-2">
                 <div className="w-10 h-10 bg-brand-500/10 border border-brand-500/20 rounded-lg flex items-center justify-center group-hover:bg-brand-500/20 transition-colors">

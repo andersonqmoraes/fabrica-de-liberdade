@@ -1,0 +1,17 @@
+{
+  "name": "Fábrica de Liberdade",
+  "short_name": "FábricaLib",
+  "description": "Guia definitivo de IA, tecnologia e produtividade para conquistar liberdade financeira.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1117",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
