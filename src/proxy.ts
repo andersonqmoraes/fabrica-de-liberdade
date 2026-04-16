@@ -5,7 +5,7 @@ export default createMiddleware(routing);
 
 export const config = {
   matcher: [
-    // Aplica i18n em todas as rotas exceto assets estáticos
-    "/((?!_next|_vercel|.*\\..*).*)",
+    // Aplica i18n em rotas de página — exclui API, assets estáticos e internos do Next
+    "/((?!api|_next|_vercel|.*\\..*).*)",
   ],
 };
