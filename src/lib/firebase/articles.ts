@@ -74,6 +74,25 @@ export async function getPublishedArticles(limitCount?: number): Promise<Article
   return getArticles({ status: "published", limitCount });
 }
 
+// Busca artigos para a aba de ideias — query simples sem índice composto
+export async function getArticlesForIdeas(limitCount = 20): Promise<Pick<Article, "id" | "category" | "tags" | "translations">[]> {
+  const constraints: QueryConstraint[] = [
+    where("status", "==", "published"),
+    limit(limitCount),
+  ];
+  const q = query(collection(db, COLLECTION), ...constraints);
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => {
+    const data = d.data();
+    return {
+      id: d.id,
+      category: data.category,
+      tags: data.tags || [],
+      translations: data.translations || {},
+    };
+  });
+}
+
 export async function getFeaturedArticles(count = 3): Promise<Article[]> {
   const constraints: QueryConstraint[] = [
     where("status", "==", "published"),

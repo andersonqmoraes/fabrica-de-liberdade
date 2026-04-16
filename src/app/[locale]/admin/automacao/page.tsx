@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { createArticle } from "@/lib/firebase/articles";
-import { getPublishedArticles } from "@/lib/firebase/articles";
+import { createArticle, getArticlesForIdeas } from "@/lib/firebase/articles";
 import { slugify, calculateReadTime } from "@/lib/utils";
 import { Link } from "@/i18n/routing";
 import {
@@ -211,9 +210,9 @@ export default function AdminAutomacaoPage() {
       // Busca artigos existentes se ainda não buscou
       let articles = existingArticles;
       if (!articlesFetched) {
-        const fetched = await getPublishedArticles(20);
+        const fetched = await getArticlesForIdeas(20);
         const mapped = fetched.map((a) => ({
-          title: a.translations?.["pt-BR"]?.title || a.translations?.en?.title || a.slug,
+          title: a.translations?.["pt-BR"]?.title || a.translations?.en?.title || "Sem título",
           category: a.category,
           tags: a.tags || [],
         }));
