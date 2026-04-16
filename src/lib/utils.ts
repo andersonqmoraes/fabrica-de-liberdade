@@ -73,9 +73,9 @@ export function stripMarkdown(markdown: string): string {
 
 // --- SEO ---
 export function generateOgImageUrl(title: string, category: string): string {
-  // Gera URL para imagem OG dinâmica (pode usar serviço externo)
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://fabricadeliberdade.com.br";
   const encoded = encodeURIComponent(title);
-  return `https://fabricadeliberdade.com.br/api/og?title=${encoded}&category=${category}`;
+  return `${siteUrl}/api/og?title=${encoded}&category=${category}`;
 }
 
 // --- Number formatting ---

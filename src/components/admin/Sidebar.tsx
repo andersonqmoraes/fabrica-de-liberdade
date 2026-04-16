@@ -14,6 +14,7 @@ import {
   LogOut,
   ChevronRight,
   ExternalLink,
+  Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/layout/Logo";
@@ -47,6 +48,11 @@ const navItems: NavItem[] = [
     href: "/admin/automacao",
     icon: Bot,
     labelKey: "automation",
+  },
+  {
+    href: "/admin/mensagens",
+    icon: Mail,
+    labelKey: "messages",
   },
   {
     href: "/admin/configuracoes",

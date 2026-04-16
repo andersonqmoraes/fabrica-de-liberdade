@@ -10,9 +10,9 @@
     "export": "next build && echo 'Build concluido - pasta out/ pronta para upload na Hostgator'"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.30.0",
     "@firebase/auth": "^1.13.0",
     "@firebase/firestore": "^4.7.3",
+    "@google/genai": "^1.50.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "firebase": "^10.14.1",

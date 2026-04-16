@@ -9,6 +9,7 @@ import { getPublishedArticles } from "@/lib/firebase/articles";
 import { Link } from "@/i18n/routing";
 import { Search, Filter, Rss } from "lucide-react";
 import type { Locale, ArticleCategory } from "@/types";
+import { CATEGORIES } from "@/lib/categories";
 
 interface BlogPageProps {
   params: Promise<{ locale: string }>;
@@ -31,13 +32,7 @@ export async function generateMetadata({ params }: BlogPageProps): Promise<Metad
 
 const categoryMeta: Record<
   string,
-  {
-    label: Record<Locale, string>;
-    desc: Record<Locale, string>;
-    color: string;
-    textColor: string;
-    borderColor: string;
-  }
+  { label: Record<Locale, string>; desc: Record<Locale, string>; color: string; textColor: string; borderColor: string }
 > = {
   all: {
     label: { "pt-BR": "Todos", en: "All", es: "Todos" },
@@ -46,48 +41,18 @@ const categoryMeta: Record<
     textColor: "text-gray-300",
     borderColor: "border-dark-400",
   },
-  "ai-tools": {
-    label: { "pt-BR": "Ferramentas de IA", en: "AI Tools", es: "IA Tools" },
-    desc: { "pt-BR": "As melhores IAs do mercado", en: "Best AI tools", es: "Mejores IAs" },
-    color: "bg-brand-500/10",
-    textColor: "text-brand-400",
-    borderColor: "border-brand-500/30",
-  },
-  productivity: {
-    label: { "pt-BR": "Produtividade", en: "Productivity", es: "Productividad" },
-    desc: { "pt-BR": "Faça mais em menos tempo", en: "Do more, faster", es: "Haz más" },
-    color: "bg-blue-500/10",
-    textColor: "text-blue-400",
-    borderColor: "border-blue-500/30",
-  },
-  "tech-reviews": {
-    label: { "pt-BR": "Reviews", en: "Reviews", es: "Reviews" },
-    desc: { "pt-BR": "Análises honestas", en: "Honest reviews", es: "Análisis honestos" },
-    color: "bg-purple-500/10",
-    textColor: "text-purple-400",
-    borderColor: "border-purple-500/30",
-  },
-  "make-money": {
-    label: { "pt-BR": "Ganhar Dinheiro", en: "Make Money", es: "Ganar Dinero" },
-    desc: { "pt-BR": "Renda real na internet", en: "Real income online", es: "Ingresos reales" },
-    color: "bg-gold-500/10",
-    textColor: "text-gold-400",
-    borderColor: "border-gold-500/30",
-  },
-  automation: {
-    label: { "pt-BR": "Automação", en: "Automation", es: "Automatización" },
-    desc: { "pt-BR": "Automatize sua vida", en: "Automate your life", es: "Automatiza" },
-    color: "bg-cyan-500/10",
-    textColor: "text-cyan-400",
-    borderColor: "border-cyan-500/30",
-  },
-  software: {
-    label: { "pt-BR": "Software & Apps", en: "Software", es: "Software" },
-    desc: { "pt-BR": "Apps essenciais", en: "Essential apps", es: "Apps esenciales" },
-    color: "bg-pink-500/10",
-    textColor: "text-pink-400",
-    borderColor: "border-pink-500/30",
-  },
+  ...Object.fromEntries(
+    CATEGORIES.map((cat) => [
+      cat.slug,
+      {
+        label: cat.label,
+        desc: cat.desc,
+        color: cat.bg,
+        textColor: cat.text,
+        borderColor: cat.border.replace("/20", "/30"),
+      },
+    ])
+  ),
 };
 
 export default async function BlogPage({ params, searchParams }: BlogPageProps) {

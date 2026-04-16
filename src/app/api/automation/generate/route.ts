@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenAI, Modality } from "@google/genai";
 import type { ArticleCategory, Locale } from "@/types";
 
-// Prompts otimizados para SEO e monetização
 function buildArticlePrompt(
   keyword: string,
   category: ArticleCategory,
@@ -47,7 +46,7 @@ function buildArticlePrompt(
   "excerpt": "Resumo de 1-2 frases",
   "content": "Conteúdo completo em Markdown",
   "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
-  "imagePrompt": "Prompt para geração de imagem DALL-E 3",
+  "imagePrompt": "Prompt para geração de imagem: tema, cores, estilo visual",
   "affiliateKeywords": ["produto1", "produto2"],
   "wordCount": 2500,
   "readTime": 12
@@ -57,29 +56,26 @@ function buildArticlePrompt(
 Gere APENAS o JSON, sem texto adicional.`;
 }
 
-async function generateImage(prompt: string): Promise<string | null> {
-  const openaiKey = process.env.OPENAI_API_KEY;
-  if (!openaiKey) return null;
-
+async function generateImageWithGemini(
+  ai: GoogleGenAI,
+  prompt: string
+): Promise<string | null> {
   try {
-    const res = await fetch("https://api.openai.com/v1/images/generations", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash-preview-image-generation",
+      contents: `Create a professional blog thumbnail image for an article about: ${prompt}. Dark tech aesthetic, modern design, no text overlay, high quality, 16:9 ratio.`,
+      config: {
+        responseModalities: [Modality.TEXT, Modality.IMAGE],
       },
-      body: JSON.stringify({
-        model: "dall-e-3",
-        prompt: `Professional blog thumbnail image for an article about ${prompt}. Dark theme, tech aesthetic, no text, high quality, 16:9 ratio.`,
-        n: 1,
-        size: "1792x1024",
-        quality: "standard",
-      }),
     });
 
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.data?.[0]?.url || null;
+    for (const part of response.candidates?.[0]?.content?.parts ?? []) {
+      if (part.inlineData?.mimeType?.startsWith("image/")) {
+        const base64 = part.inlineData.data;
+        return `data:${part.inlineData.mimeType};base64,${base64}`;
+      }
+    }
+    return null;
   } catch {
     return null;
   }
@@ -90,32 +86,27 @@ export async function POST(request: NextRequest) {
     const { keyword, category, locale, tone, generateImage: genImage } =
       await request.json();
 
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
-    if (!anthropicKey) {
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (!geminiKey) {
       return NextResponse.json(
-        {
-          error:
-            "ANTHROPIC_API_KEY não configurada. Adicione no arquivo .env.local",
-        },
+        { error: "GEMINI_API_KEY não configurada. Adicione no arquivo .env.local" },
         { status: 400 }
       );
     }
 
-    // Gera conteúdo com Claude
-    const client = new Anthropic({ apiKey: anthropicKey });
+    const ai = new GoogleGenAI({ apiKey: geminiKey });
 
-    const message = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 8192,
-      messages: [
-        {
-          role: "user",
-          content: buildArticlePrompt(keyword, category, locale, tone),
-        },
-      ],
+    // Gera conteúdo com Gemini
+    const textResponse = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: buildArticlePrompt(keyword, category, locale, tone),
+      config: {
+        temperature: 0.7,
+        maxOutputTokens: 8192,
+      },
     });
 
-    const rawContent = message.content[0].type === "text" ? message.content[0].text : "";
+    const rawContent = textResponse.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
 
     // Parse JSON da resposta
     const jsonMatch = rawContent.match(/```json\n?([\s\S]*?)\n?```/);
@@ -125,14 +116,13 @@ export async function POST(request: NextRequest) {
     try {
       articleData = JSON.parse(jsonStr);
     } catch {
-      // Tenta parse direto
       articleData = JSON.parse(rawContent);
     }
 
-    // Gera imagem se solicitado
+    // Gera imagem com Gemini se solicitado
     let imageUrl: string | null = null;
     if (genImage && articleData.imagePrompt) {
-      imageUrl = await generateImage(articleData.imagePrompt);
+      imageUrl = await generateImageWithGemini(ai, articleData.imagePrompt);
     }
 
     return NextResponse.json({

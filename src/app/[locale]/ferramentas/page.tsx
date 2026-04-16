@@ -1,4 +1,6 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useState, use } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "@/i18n/routing";
@@ -17,26 +19,6 @@ import type { Locale } from "@/types";
 
 interface Props {
   params: Promise<{ locale: string }>;
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://fabricadeliberdade.com.br";
-  const titles: Record<string, string> = {
-    "pt-BR": "Ferramentas Recomendadas — Fábrica de Liberdade",
-    en: "Recommended Tools — Freedom Factory",
-    es: "Herramientas Recomendadas — Fábrica de Libertad",
-  };
-  const descriptions: Record<string, string> = {
-    "pt-BR": "As melhores ferramentas de IA e produtividade testadas e aprovadas. Reviews honestos para você escolher com confiança.",
-    en: "The best AI and productivity tools tested and approved. Honest reviews to help you choose with confidence.",
-    es: "Las mejores herramientas de IA y productividad probadas y aprobadas. Reviews honestas para elegir con confianza.",
-  };
-  return {
-    title: titles[locale] || titles["pt-BR"],
-    description: descriptions[locale] || descriptions["pt-BR"],
-    alternates: { canonical: `${siteUrl}/ferramentas` },
-  };
 }
 
 interface Tool {
@@ -182,9 +164,14 @@ const categories = [
   { key: "make-money", label: { "pt-BR": "Monetização", en: "Monetization", es: "Monetización" }, icon: DollarSign },
 ];
 
-export default async function ToolsPage({ params }: Props) {
-  const { locale } = await params;
+export default function ToolsPage({ params }: Props) {
+  const { locale } = use(params);
   const l = locale as Locale;
+  const [activeCategory, setActiveCategory] = useState("all");
+
+  const filteredTools = activeCategory === "all"
+    ? tools
+    : tools.filter((t) => t.category === activeCategory);
 
   const pageTitle: Record<Locale, string> = {
     "pt-BR": "Ferramentas recomendadas",
@@ -223,8 +210,9 @@ export default async function ToolsPage({ params }: Props) {
             {categories.map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
+                onClick={() => setActiveCategory(key)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
-                  key === "all"
+                  activeCategory === key
                     ? "bg-brand-500/15 text-brand-400 border-brand-500/30"
                     : "bg-dark-600 text-gray-500 border-dark-400 hover:border-dark-300"
                 }`}
@@ -237,7 +225,7 @@ export default async function ToolsPage({ params }: Props) {
 
           {/* Tools grid */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {tools.map((tool) => (
+            {filteredTools.map((tool) => (
               <a
                 key={tool.name}
                 href={tool.href}
@@ -280,6 +268,12 @@ export default async function ToolsPage({ params }: Props) {
               </a>
             ))}
           </div>
+
+          {filteredTools.length === 0 && (
+            <div className="text-center py-16 text-gray-500">
+              {l === "pt-BR" ? "Nenhuma ferramenta nessa categoria ainda." : l === "en" ? "No tools in this category yet." : "No hay herramientas en esta categoría aún."}
+            </div>
+          )}
 
           {/* CTA */}
           <div className="mt-16 card p-8 text-center max-w-2xl mx-auto">

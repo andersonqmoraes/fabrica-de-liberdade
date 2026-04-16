@@ -30,11 +30,25 @@ export default function ContactPage() {
     setSending(true);
     setError("");
 
-    // Simulated send — wire up your email provider (Resend, SendGrid, etc.)
-    await new Promise((r) => setTimeout(r, 1200));
-    setSending(false);
-    setSent(true);
-    setForm({ name: "", email: "", subject: "", message: "" });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Erro ao enviar mensagem");
+      }
+
+      setSent(true);
+      setForm({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro ao enviar mensagem. Tente novamente.");
+    } finally {
+      setSending(false);
+    }
   }
 
   const socials = [
