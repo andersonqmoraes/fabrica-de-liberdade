@@ -48,18 +48,11 @@ export async function getArticles(options?: {
   locale?: Locale;
   limitCount?: number;
 }): Promise<Article[]> {
-  const constraints: QueryConstraint[] = [];
+  // Usa apenas orderBy para evitar índice composto (where + orderBy = índice necessário no Firestore)
+  // Filtragem de status/category é feita em memória
+  const constraints: QueryConstraint[] = [orderBy("publishedAt", "desc")];
 
-  if (options?.status) {
-    constraints.push(where("status", "==", options.status));
-  }
-  if (options?.category) {
-    constraints.push(where("category", "==", options.category));
-  }
-
-  constraints.push(orderBy("publishedAt", "desc"));
-
-  if (options?.limitCount) {
+  if (options?.limitCount && !options?.status && !options?.category) {
     constraints.push(limit(options.limitCount));
   }
 
@@ -67,7 +60,20 @@ export async function getArticles(options?: {
   const snapshot = await getDocs(q);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return snapshot.docs.map((d: any) => toArticle(d.id, d.data()));
+  let articles = snapshot.docs.map((d: any) => toArticle(d.id, d.data()));
+
+  // Filtra em memória para evitar índices compostos
+  if (options?.status) {
+    articles = articles.filter((a) => a.status === options.status);
+  }
+  if (options?.category) {
+    articles = articles.filter((a) => a.category === options.category);
+  }
+  if (options?.limitCount) {
+    articles = articles.slice(0, options.limitCount);
+  }
+
+  return articles;
 }
 
 export async function getPublishedArticles(limitCount?: number): Promise<Article[]> {
