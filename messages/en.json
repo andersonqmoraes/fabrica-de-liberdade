@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "siteName": "Freedom Factory",
+    "siteDescription": "The ultimate guide to AI, technology and productivity to achieve financial and time freedom.",
+    "siteKeywords": "artificial intelligence, AI tools, technology, productivity, financial freedom, make money online"
+  },
+  "nav": {
+    "home": "Home",
+    "blog": "Blog",
+    "tools": "Tools",
+    "about": "About",
+    "contact": "Contact",
+    "admin": "Admin Panel",
+    "readMore": "Read more",
+    "allArticles": "View all articles",
+    "backToBlog": "Back to blog"
+  },
+  "hero": {
+    "badge": "AI + Technology + Productivity",
+    "headline1": "Build your",
+    "headline2": "Freedom",
+    "headline3": "Factory",
+    "subheadline": "Master the AI tools, technology and productivity strategies creating a new digital elite. Straight-to-the-point content for people who want real results.",
+    "cta1": "Explore content",
+    "cta2": "View free tools",
+    "stats": {
+      "articles": "Published articles",
+      "tools": "Tools reviewed",
+      "readers": "Monthly readers"
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Articles on AI, technology and productivity to maximize your results",
+    "featured": "Featured",
+    "latest": "Latest articles",
+    "popular": "Most popular",
+    "minRead": "min read",
+    "publishedAt": "Published on",
+    "updatedAt": "Updated on",
+    "by": "by",
+    "categories": "Categories",
+    "tags": "Tags",
+    "share": "Share",
+    "tableOfContents": "Table of contents",
+    "relatedArticles": "Related articles",
+    "noArticles": "No articles found.",
+    "search": "Search articles...",
+    "filter": "Filter by category"
+  },
+  "categories": {
+    "all": "All",
+    "ai-tools": "AI Tools",
+    "productivity": "Productivity",
+    "tech-reviews": "Tech Reviews",
+    "make-money": "Make Money Online",
+    "automation": "Automation",
+    "software": "Software & Apps"
+  },
+  "newsletter": {
+    "title": "Get the best content",
+    "subtitle": "Join over 10,000 readers building their digital freedom",
+    "placeholder": "Your best email",
+    "cta": "Subscribe now",
+    "privacy": "No spam. Unsubscribe anytime.",
+    "success": "Amazing! You're on the list. Check your email.",
+    "error": "Something went wrong. Please try again.",
+    "benefit1": "Exclusive AI tools every week",
+    "benefit2": "Strategies to make money online",
+    "benefit3": "Honest technology reviews"
+  },
+  "affiliate": {
+    "disclaimer": "This article contains affiliate links. Purchasing through them supports the site at no extra cost to you.",
+    "bestPrice": "Best price",
+    "buyNow": "Buy now",
+    "checkPrice": "Check price",
+    "amazonCta": "View on Amazon",
+    "mlCta": "View on Mercado Livre",
+    "aliCta": "View on AliExpress"
+  },
+  "tools": {
+    "title": "Recommended Tools",
+    "description": "The best AI and productivity tools tested and approved by Freedom Factory",
+    "free": "Free",
+    "freemium": "Freemium",
+    "paid": "Paid",
+    "visitTool": "Visit tool",
+    "tryFree": "Try for free"
+  },
+  "footer": {
+    "tagline": "Building freedom through technology.",
+    "sections": {
+      "content": "Content",
+      "tools": "Tools",
+      "company": "Company"
+    },
+    "links": {
+      "blog": "Blog",
+      "aiTools": "AI Tools",
+      "productivityTools": "Productivity",
+      "about": "About us",
+      "contact": "Contact",
+      "privacy": "Privacy",
+      "terms": "Terms of use",
+      "sitemap": "Sitemap"
+    },
+    "copyright": "All rights reserved.",
+    "madeWith": "Made with AI and lots of coffee"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "articles": "Articles",
+    "media": "Media",
+    "automation": "Automation",
+    "settings": "Settings",
+    "logout": "Logout",
+    "newArticle": "New article",
+    "editArticle": "Edit article",
+    "publishArticle": "Publish",
+    "saveDraft": "Save draft",
+    "deleteArticle": "Delete",
+    "status": {
+      "published": "Published",
+      "draft": "Draft",
+      "scheduled": "Scheduled"
+    },
+    "stats": {
+      "totalArticles": "Total articles",
+      "published": "Published",
+      "drafts": "Drafts",
+      "totalViews": "Total views",
+      "emailSubscribers": "Email subscribers",
+      "monthlyRevenue": "Estimated revenue"
+    },
+    "automation": {
+      "title": "Automation Center",
+      "generateContent": "Generate content with AI",
+      "generateImage": "Generate image with AI",
+      "schedulePost": "Schedule post",
+      "keyword": "Target keyword",
+      "tone": "Article tone",
+      "language": "Language",
+      "generate": "Generate now",
+      "generating": "Generating...",
+      "success": "Content generated successfully!",
+      "tones": {
+        "professional": "Professional",
+        "casual": "Casual",
+        "educational": "Educational",
+        "persuasive": "Persuasive"
+      }
+    }
+  },
+  "seo": {
+    "homePage": {
+      "title": "Freedom Factory — AI, Technology and Productivity",
+      "description": "The ultimate guide to AI tools, technology and productivity to build your financial and time freedom."
+    },
+    "blogPage": {
+      "title": "Blog — Freedom Factory",
+      "description": "Articles on AI, technology and productivity. Honest reviews and strategies that work."
+    }
+  }
+}

@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build
+.next/
+out/
+dist/
+
+# Env
+.env
+.env.local
+.env.*.local
+automation/.env
+
+# Firebase
+automation/firebase-service-account.json
+
+# Misc
+.DS_Store
+*.pem
+.idea/
+.vscode/settings.json
+
+# Logs
+*.log
+automation/automation.log
+automation/generation_log.json
+automation/used_keywords.json
+
+# Python
+__pycache__/
+*.pyc
+automation/__pycache__/
+automation/.venv/

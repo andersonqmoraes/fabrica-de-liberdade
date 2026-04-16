@@ -1,0 +1,327 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
+import { createArticle } from "@/lib/firebase/articles";
+import { slugify, calculateReadTime } from "@/lib/utils";
+import {
+  Save,
+  Globe,
+  Loader2,
+  Plus,
+  Trash2,
+  Image,
+  Tag,
+  FileText,
+  Eye,
+  Send,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { ArticleCategory, ArticleStatus, Locale } from "@/types";
+
+const LOCALES: { code: Locale; label: string; flag: string }[] = [
+  { code: "pt-BR", label: "Português", flag: "🇧🇷" },
+  { code: "en", label: "English", flag: "🇺🇸" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
+];
+
+export default function NewArticlePage() {
+  const t = useTranslations("admin");
+  const router = useRouter();
+
+  const [activeLocale, setActiveLocale] = useState<Locale>("pt-BR");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  // Metadata
+  const [category, setCategory] = useState<ArticleCategory>("ai-tools");
+  const [status, setStatus] = useState<ArticleStatus>("draft");
+  const [featuredImage, setFeaturedImage] = useState("");
+  const [tags, setTags] = useState("");
+  const [hasAdsense, setHasAdsense] = useState(true);
+
+  // Translations
+  const [translations, setTranslations] = useState<
+    Record<Locale, { title: string; excerpt: string; content: string; metaTitle: string; metaDescription: string }>
+  >({
+    "pt-BR": { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
+    en: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
+    es: { title: "", excerpt: "", content: "", metaTitle: "", metaDescription: "" },
+  });
+
+  function updateTranslation(locale: Locale, field: string, value: string) {
+    setTranslations((prev) => ({
+      ...prev,
+      [locale]: { ...prev[locale], [field]: value },
+    }));
+  }
+
+  const current = translations[activeLocale];
+  const mainTitle = translations["pt-BR"].title || translations.en.title;
+
+  async function handleSave(publish = false) {
+    if (!mainTitle) {
+      setError("Adicione pelo menos o título em PT-BR ou EN.");
+      return;
+    }
+
+    setSaving(true);
+    setError("");
+
+    try {
+      const tagList = tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+      const filledTranslations = Object.fromEntries(
+        Object.entries(translations).filter(([, v]) => v.title.trim())
+      );
+
+      await createArticle({
+        slug: slugify(mainTitle),
+        status: publish ? "published" : status,
+        translations: filledTranslations,
+        category,
+        tags: tagList,
+        featuredImage,
+        hasAdsense,
+        readTime: calculateReadTime(current.content),
+        publishedAt: new Date().toISOString(),
+        generatedByAI: false,
+        affiliateLinks: [],
+      });
+
+      router.push("/admin/artigos");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Erro ao salvar";
+      setError(msg);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="max-w-5xl space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display font-bold text-3xl text-white mb-1">
+            Novo Artigo
+          </h1>
+          {mainTitle && (
+            <p className="text-gray-600 text-sm font-mono">
+              slug: {slugify(mainTitle)}
+            </p>
+          )}
+        </div>
+        <div className="flex gap-3">
+          <button onClick={() => handleSave(false)} disabled={saving} className="btn-secondary text-sm">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            Salvar rascunho
+          </button>
+          <button onClick={() => handleSave(true)} disabled={saving} className="btn-primary text-sm">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            Publicar
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 text-sm">
+          {error}
+        </div>
+      )}
+
+      <div className="grid lg:grid-cols-3 gap-6">
+        {/* Main editor */}
+        <div className="lg:col-span-2 space-y-5">
+          {/* Locale tabs */}
+          <div className="flex gap-2">
+            {LOCALES.map((l) => (
+              <button
+                key={l.code}
+                onClick={() => setActiveLocale(l.code)}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border transition-all",
+                  activeLocale === l.code
+                    ? "bg-brand-500/15 text-brand-400 border-brand-500/30"
+                    : "bg-dark-600 text-gray-500 border-dark-400 hover:border-dark-300"
+                )}
+              >
+                {l.flag} {l.label}
+                {translations[l.code].title && (
+                  <div className="w-1.5 h-1.5 bg-brand-400 rounded-full" />
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Title */}
+          <div className="card p-5 space-y-4">
+            <div>
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 block">
+                Título *
+              </label>
+              <input
+                value={current.title}
+                onChange={(e) => updateTranslation(activeLocale, "title", e.target.value)}
+                placeholder="Título otimizado para SEO (60-65 caracteres)"
+                className="input text-lg font-medium"
+              />
+              <div className="text-xs text-gray-700 mt-1.5 text-right">
+                {current.title.length}/65 chars
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 block">
+                Resumo / Excerpt
+              </label>
+              <textarea
+                value={current.excerpt}
+                onChange={(e) => updateTranslation(activeLocale, "excerpt", e.target.value)}
+                placeholder="Resumo atrativo de 1-2 frases..."
+                className="input resize-none"
+                rows={2}
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2 block">
+                Conteúdo (Markdown)
+              </label>
+              <textarea
+                value={current.content}
+                onChange={(e) => updateTranslation(activeLocale, "content", e.target.value)}
+                placeholder="# Título H1&#10;&#10;Conteúdo em Markdown..."
+                className="input font-mono text-sm resize-none"
+                rows={20}
+              />
+              <div className="text-xs text-gray-700 mt-1.5">
+                ~{calculateReadTime(current.content)} min de leitura
+              </div>
+            </div>
+          </div>
+
+          {/* SEO */}
+          <div className="card p-5 space-y-4">
+            <h3 className="font-semibold text-gray-300 flex items-center gap-2">
+              <Globe className="w-4 h-4 text-brand-400" />
+              SEO
+            </h3>
+            <div>
+              <label className="text-xs font-medium text-gray-500 mb-2 block">Meta Title</label>
+              <input
+                value={current.metaTitle}
+                onChange={(e) => updateTranslation(activeLocale, "metaTitle", e.target.value)}
+                placeholder="Meta title (deixe vazio para usar o título)"
+                className="input text-sm"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-gray-500 mb-2 block">Meta Description</label>
+              <textarea
+                value={current.metaDescription}
+                onChange={(e) => updateTranslation(activeLocale, "metaDescription", e.target.value)}
+                placeholder="Meta description persuasiva (150-160 chars)"
+                className="input text-sm resize-none"
+                rows={2}
+              />
+              <div className="text-xs text-gray-700 mt-1 text-right">
+                {current.metaDescription.length}/160 chars
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-5">
+          {/* Status & Category */}
+          <div className="card p-5 space-y-4">
+            <h3 className="font-semibold text-gray-300 text-sm flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Configurações
+            </h3>
+
+            <div>
+              <label className="text-xs font-medium text-gray-500 mb-2 block">Categoria</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value as ArticleCategory)}
+                className="input text-sm"
+              >
+                <option value="ai-tools">Ferramentas de IA</option>
+                <option value="productivity">Produtividade</option>
+                <option value="tech-reviews">Tech Reviews</option>
+                <option value="make-money">Ganhar Dinheiro</option>
+                <option value="automation">Automação</option>
+                <option value="software">Software & Apps</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-gray-500 mb-2 block">Status inicial</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value as ArticleStatus)}
+                className="input text-sm"
+              >
+                <option value="draft">Rascunho</option>
+                <option value="published">Publicado</option>
+                <option value="scheduled">Agendado</option>
+              </select>
+            </div>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={hasAdsense}
+                onChange={(e) => setHasAdsense(e.target.checked)}
+                className="w-4 h-4 accent-brand-500"
+              />
+              <span className="text-sm text-gray-400">Ativar AdSense neste artigo</span>
+            </label>
+          </div>
+
+          {/* Featured Image */}
+          <div className="card p-5 space-y-3">
+            <h3 className="font-semibold text-gray-300 text-sm flex items-center gap-2">
+              <Image className="w-4 h-4" />
+              Imagem de capa
+            </h3>
+            <input
+              value={featuredImage}
+              onChange={(e) => setFeaturedImage(e.target.value)}
+              placeholder="URL da imagem..."
+              className="input text-sm"
+            />
+            {featuredImage && (
+              <img
+                src={featuredImage}
+                alt="Preview"
+                className="w-full h-32 object-cover rounded-xl"
+              />
+            )}
+          </div>
+
+          {/* Tags */}
+          <div className="card p-5 space-y-3">
+            <h3 className="font-semibold text-gray-300 text-sm flex items-center gap-2">
+              <Tag className="w-4 h-4" />
+              Tags
+            </h3>
+            <input
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              placeholder="ia, ferramentas, produtividade"
+              className="input text-sm"
+            />
+            <p className="text-gray-700 text-xs">Separadas por vírgula</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

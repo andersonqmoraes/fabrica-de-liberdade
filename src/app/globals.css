@@ -1,0 +1,231 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   FÁBRICA DE LIBERDADE — Global Styles
+   ============================================ */
+
+@layer base {
+  :root {
+    --background: 220 14% 4%;
+    --foreground: 0 0% 98%;
+    --brand: 160 84% 39%;
+    --brand-foreground: 0 0% 100%;
+    --border: 220 13% 15%;
+    --muted: 220 13% 20%;
+    --muted-foreground: 220 9% 55%;
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-dark-400;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-dark-800 text-gray-100 font-sans;
+  }
+
+  /* Scrollbar personalizado */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-700;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark-300 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-brand-500;
+  }
+
+  /* Seleção de texto */
+  ::selection {
+    @apply bg-brand-500/30 text-brand-300;
+  }
+}
+
+@layer components {
+  /* Container principal */
+  .container-main {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Botões */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-brand-500 hover:bg-brand-600
+           text-white font-semibold rounded-xl transition-all duration-200
+           shadow-brand hover:shadow-brand-lg hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-dark-600 hover:bg-dark-500
+           text-gray-100 font-semibold rounded-xl border border-dark-300
+           hover:border-brand-500/50 transition-all duration-200;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-brand-400
+           font-medium rounded-lg transition-colors duration-200;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-dark-600 border border-dark-400 rounded-2xl overflow-hidden
+           transition-all duration-300 hover:border-brand-500/30 hover:shadow-card-hover;
+  }
+
+  .card-glass {
+    @apply bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-brand {
+    @apply badge bg-brand-500/20 text-brand-400 border border-brand-500/30;
+  }
+
+  .badge-gold {
+    @apply badge bg-gold-500/20 text-gold-400 border border-gold-500/30;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-brand-400 via-brand-300 to-blue-400 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-gold {
+    @apply bg-gradient-to-r from-gold-400 to-gold-500 bg-clip-text text-transparent;
+  }
+
+  /* Section spacing */
+  .section {
+    @apply py-16 lg:py-24;
+  }
+
+  .section-sm {
+    @apply py-10 lg:py-16;
+  }
+
+  /* Input */
+  .input {
+    @apply w-full px-4 py-3 bg-dark-600 border border-dark-300 text-gray-100
+           placeholder-gray-500 rounded-xl focus:outline-none focus:border-brand-500
+           focus:ring-2 focus:ring-brand-500/20 transition-all duration-200;
+  }
+
+  /* Prose override para artigos */
+  .article-content {
+    @apply prose prose-invert prose-lg max-w-none;
+  }
+
+  .article-content h2 {
+    @apply text-2xl font-display font-bold text-white mt-10 mb-4 pb-2
+           border-b border-dark-400;
+  }
+
+  .article-content h3 {
+    @apply text-xl font-display font-semibold text-gray-100 mt-8 mb-3;
+  }
+
+  .article-content p {
+    @apply text-gray-300 leading-relaxed mb-6;
+  }
+
+  .article-content ul, .article-content ol {
+    @apply space-y-2 my-6;
+  }
+
+  .article-content li {
+    @apply text-gray-300;
+  }
+
+  .article-content a {
+    @apply text-brand-400 hover:text-brand-300 underline decoration-brand-500/40
+           hover:decoration-brand-400 transition-colors;
+  }
+
+  .article-content blockquote {
+    @apply border-l-4 border-brand-500 bg-dark-600 rounded-r-xl pl-6 pr-4 py-4 my-8 italic text-gray-400;
+  }
+
+  .article-content code {
+    @apply bg-dark-600 text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  .article-content pre {
+    @apply bg-dark-700 border border-dark-400 rounded-xl p-4 overflow-x-auto;
+  }
+
+  .article-content img {
+    @apply rounded-xl shadow-card;
+  }
+
+  .article-content table {
+    @apply w-full border-collapse my-6;
+  }
+
+  .article-content th {
+    @apply bg-dark-600 text-gray-100 font-semibold px-4 py-3 text-left border border-dark-400;
+  }
+
+  .article-content td {
+    @apply px-4 py-3 border border-dark-400 text-gray-300;
+  }
+
+  .article-content tr:nth-child(even) td {
+    @apply bg-dark-700;
+  }
+}
+
+@layer utilities {
+  /* Animações */
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out;
+  }
+
+  /* Glow effects */
+  .glow-brand {
+    box-shadow: 0 0 40px rgba(16, 185, 129, 0.15);
+  }
+
+  .text-shadow-glow {
+    text-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+  }
+
+  /* Grid responsive para artigos */
+  .articles-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+
+  /* Noise texture overlay */
+  .noise {
+    position: relative;
+  }
+
+  .noise::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.03;
+  }
+}

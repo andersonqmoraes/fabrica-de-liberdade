@@ -1,0 +1,184 @@
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
+  limit,
+  increment,
+  serverTimestamp,
+  Timestamp,
+  QueryConstraint,
+} from "firebase/firestore";
+import { db } from "./config";
+import type { Article, ArticleCategory, ArticleStatus, Locale } from "@/types";
+
+const COLLECTION = "articles";
+
+// --- Helpers ---
+function toArticle(id: string, data: Record<string, unknown>): Article {
+  return {
+    ...data,
+    id,
+    publishedAt:
+      data.publishedAt instanceof Timestamp
+        ? data.publishedAt.toDate().toISOString()
+        : (data.publishedAt as string),
+    createdAt:
+      data.createdAt instanceof Timestamp
+        ? data.createdAt.toDate().toISOString()
+        : (data.createdAt as string),
+    updatedAt:
+      data.updatedAt instanceof Timestamp
+        ? data.updatedAt.toDate().toISOString()
+        : (data.updatedAt as string),
+  } as Article;
+}
+
+// --- Read ---
+
+export async function getArticles(options?: {
+  status?: ArticleStatus;
+  category?: ArticleCategory;
+  locale?: Locale;
+  limitCount?: number;
+}): Promise<Article[]> {
+  const constraints: QueryConstraint[] = [];
+
+  if (options?.status) {
+    constraints.push(where("status", "==", options.status));
+  }
+  if (options?.category) {
+    constraints.push(where("category", "==", options.category));
+  }
+
+  constraints.push(orderBy("publishedAt", "desc"));
+
+  if (options?.limitCount) {
+    constraints.push(limit(options.limitCount));
+  }
+
+  const q = query(collection(db, COLLECTION), ...constraints);
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map((d) => toArticle(d.id, d.data()));
+}
+
+export async function getPublishedArticles(limitCount?: number): Promise<Article[]> {
+  return getArticles({ status: "published", limitCount });
+}
+
+export async function getFeaturedArticles(count = 3): Promise<Article[]> {
+  const constraints: QueryConstraint[] = [
+    where("status", "==", "published"),
+    orderBy("views", "desc"),
+    limit(count),
+  ];
+  const q = query(collection(db, COLLECTION), ...constraints);
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((d) => toArticle(d.id, d.data()));
+}
+
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
+  const q = query(collection(db, COLLECTION), where("slug", "==", slug), limit(1));
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) return null;
+  const d = snapshot.docs[0];
+  return toArticle(d.id, d.data());
+}
+
+export async function getArticleById(id: string): Promise<Article | null> {
+  const docRef = doc(db, COLLECTION, id);
+  const snapshot = await getDoc(docRef);
+  if (!snapshot.exists()) return null;
+  return toArticle(snapshot.id, snapshot.data());
+}
+
+export async function getRelatedArticles(
+  articleId: string,
+  category: ArticleCategory,
+  count = 3
+): Promise<Article[]> {
+  const constraints: QueryConstraint[] = [
+    where("status", "==", "published"),
+    where("category", "==", category),
+    limit(count + 1),
+  ];
+  const q = query(collection(db, COLLECTION), ...constraints);
+  const snapshot = await getDocs(q);
+  return snapshot.docs
+    .map((d) => toArticle(d.id, d.data()))
+    .filter((a) => a.id !== articleId)
+    .slice(0, count);
+}
+
+// --- Write ---
+
+export async function createArticle(
+  data: Omit<Article, "id" | "createdAt" | "updatedAt" | "views">
+): Promise<string> {
+  const docRef = await addDoc(collection(db, COLLECTION), {
+    ...data,
+    views: 0,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  });
+  return docRef.id;
+}
+
+export async function updateArticle(
+  id: string,
+  data: Partial<Article>
+): Promise<void> {
+  const docRef = doc(db, COLLECTION, id);
+  await updateDoc(docRef, {
+    ...data,
+    updatedAt: serverTimestamp(),
+  });
+}
+
+export async function deleteArticle(id: string): Promise<void> {
+  await deleteDoc(doc(db, COLLECTION, id));
+}
+
+export async function incrementViews(id: string): Promise<void> {
+  const docRef = doc(db, COLLECTION, id);
+  await updateDoc(docRef, { views: increment(1) });
+}
+
+// --- Stats ---
+
+export async function getArticleStats() {
+  const allQ = query(collection(db, COLLECTION));
+  const publishedQ = query(
+    collection(db, COLLECTION),
+    where("status", "==", "published")
+  );
+  const draftQ = query(
+    collection(db, COLLECTION),
+    where("status", "==", "draft")
+  );
+
+  const [all, published, drafts] = await Promise.all([
+    getDocs(allQ),
+    getDocs(publishedQ),
+    getDocs(draftQ),
+  ]);
+
+  const totalViews = all.docs.reduce(
+    (sum, d) => sum + ((d.data().views as number) || 0),
+    0
+  );
+
+  return {
+    totalArticles: all.size,
+    publishedArticles: published.size,
+    draftArticles: drafts.size,
+    totalViews,
+  };
+}

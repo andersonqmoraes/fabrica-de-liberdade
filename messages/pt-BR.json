@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "siteName": "Fábrica de Liberdade",
+    "siteDescription": "Guia definitivo de IA, tecnologia e produtividade para conquistar liberdade financeira e de tempo.",
+    "siteKeywords": "inteligência artificial, ferramentas de IA, tecnologia, produtividade, liberdade financeira, ganhar dinheiro online"
+  },
+  "nav": {
+    "home": "Início",
+    "blog": "Blog",
+    "tools": "Ferramentas",
+    "about": "Sobre",
+    "contact": "Contato",
+    "admin": "Painel Admin",
+    "readMore": "Ler mais",
+    "allArticles": "Ver todos os artigos",
+    "backToBlog": "Voltar ao blog"
+  },
+  "hero": {
+    "badge": "IA + Tecnologia + Produtividade",
+    "headline1": "Construa sua",
+    "headline2": "Fábrica de",
+    "headline3": "Liberdade",
+    "subheadline": "Domine as ferramentas de IA, tecnologia e produtividade que estão criando uma nova elite digital. Conteúdo direto ao ponto para quem quer resultados reais.",
+    "cta1": "Explorar conteúdo",
+    "cta2": "Ver ferramentas grátis",
+    "stats": {
+      "articles": "Artigos publicados",
+      "tools": "Ferramentas avaliadas",
+      "readers": "Leitores mensais"
+    }
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Artigos sobre IA, tecnologia e produtividade para maximizar seus resultados",
+    "featured": "Em destaque",
+    "latest": "Artigos recentes",
+    "popular": "Mais populares",
+    "minRead": "min de leitura",
+    "publishedAt": "Publicado em",
+    "updatedAt": "Atualizado em",
+    "by": "por",
+    "categories": "Categorias",
+    "tags": "Tags",
+    "share": "Compartilhar",
+    "tableOfContents": "Índice",
+    "relatedArticles": "Artigos relacionados",
+    "noArticles": "Nenhum artigo encontrado.",
+    "search": "Buscar artigos...",
+    "filter": "Filtrar por categoria"
+  },
+  "categories": {
+    "all": "Todos",
+    "ai-tools": "Ferramentas de IA",
+    "productivity": "Produtividade",
+    "tech-reviews": "Reviews de Tecnologia",
+    "make-money": "Ganhar Dinheiro Online",
+    "automation": "Automação",
+    "software": "Software & Apps"
+  },
+  "newsletter": {
+    "title": "Receba os melhores conteúdos",
+    "subtitle": "Junte-se a mais de 10.000 leitores que estão construindo sua liberdade digital",
+    "placeholder": "Seu melhor e-mail",
+    "cta": "Quero me inscrever",
+    "privacy": "Sem spam. Cancele quando quiser.",
+    "success": "Incrível! Você está na lista. Verifique seu e-mail.",
+    "error": "Algo deu errado. Tente novamente.",
+    "benefit1": "Ferramentas de IA exclusivas toda semana",
+    "benefit2": "Estratégias para ganhar dinheiro online",
+    "benefit3": "Reviews honestos de tecnologia"
+  },
+  "affiliate": {
+    "disclaimer": "Este artigo contém links de afiliado. Comprando através deles, você apoia o site sem custo extra.",
+    "bestPrice": "Melhor preço",
+    "buyNow": "Comprar agora",
+    "checkPrice": "Ver preço",
+    "amazonCta": "Ver na Amazon",
+    "mlCta": "Ver no Mercado Livre",
+    "aliCta": "Ver no AliExpress"
+  },
+  "tools": {
+    "title": "Ferramentas Recomendadas",
+    "description": "As melhores ferramentas de IA e produtividade testadas e aprovadas pela Fábrica de Liberdade",
+    "free": "Grátis",
+    "freemium": "Freemium",
+    "paid": "Pago",
+    "visitTool": "Visitar ferramenta",
+    "tryFree": "Testar grátis"
+  },
+  "footer": {
+    "tagline": "Construindo liberdade através da tecnologia.",
+    "sections": {
+      "content": "Conteúdo",
+      "tools": "Ferramentas",
+      "company": "Empresa"
+    },
+    "links": {
+      "blog": "Blog",
+      "aiTools": "Ferramentas de IA",
+      "productivityTools": "Produtividade",
+      "about": "Sobre nós",
+      "contact": "Contato",
+      "privacy": "Privacidade",
+      "terms": "Termos de uso",
+      "sitemap": "Sitemap"
+    },
+    "copyright": "Todos os direitos reservados.",
+    "madeWith": "Feito com IA e muito café"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "articles": "Artigos",
+    "media": "Mídia",
+    "automation": "Automação",
+    "settings": "Configurações",
+    "logout": "Sair",
+    "newArticle": "Novo artigo",
+    "editArticle": "Editar artigo",
+    "publishArticle": "Publicar",
+    "saveDraft": "Salvar rascunho",
+    "deleteArticle": "Excluir",
+    "status": {
+      "published": "Publicado",
+      "draft": "Rascunho",
+      "scheduled": "Agendado"
+    },
+    "stats": {
+      "totalArticles": "Total de artigos",
+      "published": "Publicados",
+      "drafts": "Rascunhos",
+      "totalViews": "Visualizações",
+      "emailSubscribers": "Assinantes de email",
+      "monthlyRevenue": "Receita estimada"
+    },
+    "automation": {
+      "title": "Central de Automação",
+      "generateContent": "Gerar conteúdo com IA",
+      "generateImage": "Gerar imagem com IA",
+      "schedulePost": "Agendar publicação",
+      "keyword": "Keyword alvo",
+      "tone": "Tom do artigo",
+      "language": "Idioma",
+      "generate": "Gerar agora",
+      "generating": "Gerando...",
+      "success": "Conteúdo gerado com sucesso!",
+      "tones": {
+        "professional": "Profissional",
+        "casual": "Casual",
+        "educational": "Educacional",
+        "persuasive": "Persuasivo"
+      }
+    }
+  },
+  "seo": {
+    "homePage": {
+      "title": "Fábrica de Liberdade — IA, Tecnologia e Produtividade",
+      "description": "Guia definitivo de ferramentas de IA, tecnologia e produtividade para construir sua liberdade financeira e de tempo."
+    },
+    "blogPage": {
+      "title": "Blog — Fábrica de Liberdade",
+      "description": "Artigos sobre IA, tecnologia e produtividade. Reviews honestos e estratégias que funcionam."
+    }
+  }
+}
