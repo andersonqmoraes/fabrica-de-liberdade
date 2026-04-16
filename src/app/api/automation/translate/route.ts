@@ -51,7 +51,7 @@ Return a JSON object with the same fields translated to ${targetName}:
 }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
+      model: "gemini-3-flash-preview",
       contents: prompt,
     });
 

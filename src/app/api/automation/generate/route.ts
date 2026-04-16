@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
 
     // Gera conteúdo com Gemini 2.0 Flash
     const textResponse = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
+      model: "gemini-3-flash-preview",
       contents: buildArticlePrompt(keyword, category, locale, tone, instructions || ""),
       config: {
         temperature: 0.75,
