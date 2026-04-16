@@ -9,9 +9,9 @@ interface LogoProps {
 }
 
 const sizeMap = {
-  sm: { icon: 32, fullH: 28 },
-  md: { icon: 40, fullH: 36 },
-  lg: { icon: 52, fullH: 48 },
+  sm: { icon: 44, fullH: 44 },
+  md: { icon: 52, fullH: 52 },
+  lg: { icon: 64, fullH: 64 },
 };
 
 export function Logo({ variant = "full", size = "md", className, dark = false }: LogoProps) {
@@ -35,8 +35,7 @@ export function Logo({ variant = "full", size = "md", className, dark = false }:
     <img
       src={dark ? "/images/Preto.png" : "/images/Branco.png"}
       alt="Fábrica de Liberdade"
-      height={fullH}
-      className={cn("flex-shrink-0 object-contain w-auto", className)}
+      className={cn("flex-shrink-0 object-contain w-auto max-w-[200px]", className)}
       style={{ height: fullH }}
     />
   );
