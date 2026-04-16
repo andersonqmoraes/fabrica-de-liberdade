@@ -131,17 +131,17 @@ export async function getRelatedArticles(
   category: ArticleCategory,
   count = 3
 ): Promise<Article[]> {
+  // Query simples por categoria sem where(status) para evitar índice composto
   const constraints: QueryConstraint[] = [
-    where("status", "==", "published"),
     where("category", "==", category),
-    limit(count + 1),
+    limit(count + 5),
   ];
   const q = query(collection(db, COLLECTION), ...constraints);
   const snapshot = await getDocs(q);
   return snapshot.docs
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .map((d: any) => toArticle(d.id, d.data()))
-    .filter((a: Article) => a.id !== articleId)
+    .filter((a: Article) => a.id !== articleId && a.status === "published")
     .slice(0, count);
 }
 

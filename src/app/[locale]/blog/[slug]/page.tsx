@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { ArticleCard } from "@/components/blog/ArticleCard";
 import { AdSenseUnit } from "@/components/monetization/AdSenseUnit";
 import { AffiliateBox } from "@/components/monetization/AffiliateBox";
+import { ShareButton } from "@/components/blog/ShareButton";
 import { getArticleBySlug, getRelatedArticles, incrementViews } from "@/lib/firebase/articles";
 import { formatDate, calculateReadTime } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
@@ -16,7 +17,6 @@ import {
   Eye,
   Calendar,
   Tag,
-  Share2,
   Bot,
   ChevronRight,
   Home,
@@ -199,20 +199,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   {article.views.toLocaleString()} views
                 </span>
               </div>
-              <button
-                className="flex items-center gap-1.5 text-gray-500 hover:text-brand-400 text-sm transition-colors"
-                onClick={() => {
-                  if (navigator?.share) {
-                    navigator.share({
-                      title: translation.title,
-                      url: window.location.href,
-                    });
-                  }
-                }}
-              >
-                <Share2 className="w-4 h-4" />
-                {t("share")}
-              </button>
+              <ShareButton title={translation.title} />
             </div>
           </header>
 
