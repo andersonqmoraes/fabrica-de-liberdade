@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   icons: {
     icon: [
+      { url: "/images/IconeBranco.png", type: "image/png" },
       { url: "/favicon.svg", type: "image/svg+xml" },
     ],
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    shortcut: "/images/IconeBranco.png",
+    apple: "/images/IconeBranco.png",
   },
   manifest: "/manifest.json",
 };

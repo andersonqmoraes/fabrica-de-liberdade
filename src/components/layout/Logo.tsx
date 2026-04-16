@@ -4,38 +4,40 @@ interface LogoProps {
   variant?: "icon" | "full";
   size?: "sm" | "md" | "lg";
   className?: string;
+  /** Use dark logo (for light backgrounds) */
+  dark?: boolean;
 }
 
 const sizeMap = {
-  sm: { icon: 32, text: "text-sm" },
-  md: { icon: 40, text: "text-base" },
-  lg: { icon: 52, text: "text-lg" },
+  sm: { icon: 32, fullH: 28 },
+  md: { icon: 40, fullH: 36 },
+  lg: { icon: 52, fullH: 48 },
 };
 
-export function Logo({ variant = "full", size = "md", className }: LogoProps) {
-  const { icon: iconSize, text: textSize } = sizeMap[size];
+export function Logo({ variant = "full", size = "md", className, dark = false }: LogoProps) {
+  const { icon: iconSize, fullH } = sizeMap[size];
 
-  return (
-    <div className={cn("flex items-center gap-2.5", className)}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
+  if (variant === "icon") {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
-        src="/images/logo-icon.svg"
+        src={dark ? "/images/IconePreto.png" : "/images/IconeBranco.png"}
         alt="Fábrica de Liberdade"
         width={iconSize}
         height={iconSize}
-        className="flex-shrink-0"
-        style={{ filter: "brightness(0) saturate(100%) invert(62%) sepia(88%) saturate(413%) hue-rotate(116deg) brightness(93%) contrast(87%)" }}
+        className={cn("flex-shrink-0 object-contain", className)}
       />
-      {variant === "full" && (
-        <div className="flex flex-col leading-none">
-          <span className={cn("font-display font-bold text-white", textSize)}>
-            Fábrica de
-          </span>
-          <span className={cn("font-display font-bold text-brand-400", textSize)}>
-            Liberdade
-          </span>
-        </div>
-      )}
-    </div>
+    );
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={dark ? "/images/Preto.png" : "/images/Branco.png"}
+      alt="Fábrica de Liberdade"
+      height={fullH}
+      className={cn("flex-shrink-0 object-contain w-auto", className)}
+      style={{ height: fullH }}
+    />
   );
 }

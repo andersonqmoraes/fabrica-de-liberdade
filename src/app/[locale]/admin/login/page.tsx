@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "@/i18n/routing";
 import { signIn } from "@/lib/firebase/auth";
-import { Zap, Mail, Lock, Loader2, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Loader2, Eye, EyeOff, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/layout/Logo";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -44,20 +45,10 @@ export default function AdminLoginPage() {
       <div className="relative w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-brand-400 to-brand-600 rounded-xl flex items-center justify-center shadow-brand-lg">
-              <Zap className="w-7 h-7 text-white" />
-            </div>
-            <div className="text-left">
-              <div className="font-display font-bold text-white text-lg leading-tight">
-                Fábrica de
-              </div>
-              <div className="font-display font-bold text-brand-400 text-lg leading-tight">
-                Liberdade
-              </div>
-            </div>
+          <div className="flex justify-center mb-3">
+            <Logo size="lg" />
           </div>
-          <p className="text-gray-600 text-sm mt-3">Painel Administrativo</p>
+          <p className="text-gray-600 text-sm">Painel Administrativo</p>
         </div>
 
         {/* Form card */}
