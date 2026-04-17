@@ -176,21 +176,35 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
         setStage("uploading");
         setProgress("Enviando para o servidor...");
 
+        // Verificar se está autenticado no Firebase
+        const { auth } = await import("@/lib/firebase/config");
+        if (!auth.currentUser) {
+          throw new Error("Você precisa estar logado para enviar imagens. Recarregue a página.");
+        }
+
         const mainFile = new File(
           [main.blob],
           file.name.replace(/\.[^.]+$/, ".webp"),
           { type: "image/webp" }
         );
 
-        const media = await uploadMedia(mainFile, "media/articles");
+        // Upload com timeout de 30s para não travar indefinidamente
+        const uploadWithTimeout = async (f: File, folder: string) => {
+          const timeoutPromise = new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("Upload demorou demais. Verifique sua conexão e tente novamente.")), 30000)
+          );
+          return Promise.race([uploadMedia(f, folder), timeoutPromise]);
+        };
 
-        // 4. Upload da thumbnail também
+        const media = await uploadWithTimeout(mainFile, "media/articles");
+
+        // 4. Upload da thumbnail (em background, não bloqueia)
         const thumbFile = new File(
           [thumb.blob],
           file.name.replace(/\.[^.]+$/, "_thumb.webp"),
           { type: "image/webp" }
         );
-        await uploadMedia(thumbFile, "media/articles/thumbs");
+        uploadWithTimeout(thumbFile, "media/articles/thumbs").catch(console.warn);
 
         setStage("done");
         setProgress("");
