@@ -26,6 +26,86 @@ interface OptimizationInfo {
   optimizedSize: string;
 }
 
+// Tamanhos alvo
+const MAIN_SIZE = { width: 1200, height: 630 };
+const THUMB_SIZE = { width: 400, height: 225 };
+
+/**
+ * Redimensiona e comprime a imagem usando Canvas API (client-side).
+ * Converte para WebP com qualidade ajustável.
+ */
+async function optimizeImage(
+  file: File,
+  maxWidth: number,
+  maxHeight: number,
+  quality: number
+): Promise<{ blob: Blob; width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      // Calcular dimensões mantendo aspect ratio com cover crop
+      let sw = img.width;
+      let sh = img.height;
+      let sx = 0;
+      let sy = 0;
+
+      const targetRatio = maxWidth / maxHeight;
+      const imgRatio = img.width / img.height;
+
+      if (imgRatio > targetRatio) {
+        // Imagem mais larga — cortar nas laterais
+        sw = img.height * targetRatio;
+        sx = (img.width - sw) / 2;
+      } else {
+        // Imagem mais alta — cortar em cima/baixo
+        sh = img.width / targetRatio;
+        sy = (img.height - sh) / 2;
+      }
+
+      // Se a imagem for menor que o alvo, usar tamanho original
+      const outWidth = Math.min(maxWidth, img.width);
+      const outHeight = Math.min(maxHeight, img.height);
+
+      const canvas = document.createElement("canvas");
+      canvas.width = outWidth;
+      canvas.height = outHeight;
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        reject(new Error("Canvas não disponível"));
+        return;
+      }
+
+      // Desenhar com suavização
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, outWidth, outHeight);
+
+      // Tentar WebP primeiro, fallback para JPEG
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(new Error("Erro ao converter imagem"));
+            return;
+          }
+          resolve({ blob, width: outWidth, height: outHeight });
+        },
+        "image/webp",
+        quality
+      );
+    };
+
+    img.onerror = () => reject(new Error("Erro ao carregar imagem"));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
+
 export function ImageUpload({ value, onChange }: ImageUploadProps) {
   const [stage, setStage] = useState<UploadStage>("idle");
   const [progress, setProgress] = useState("");
@@ -62,41 +142,51 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
       setOptimizationInfo(null);
 
       try {
-        // 1. Enviar para API de otimização
-        const formData = new FormData();
-        formData.append("file", file);
+        const originalSize = file.size;
 
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
+        // 1. Otimizar imagem principal (client-side via Canvas)
+        const main = await optimizeImage(
+          file,
+          MAIN_SIZE.width,
+          MAIN_SIZE.height,
+          0.82
+        );
+
+        // 2. Gerar thumbnail
+        const thumb = await optimizeImage(
+          file,
+          THUMB_SIZE.width,
+          THUMB_SIZE.height,
+          0.75
+        );
+
+        const optimizedSize = main.blob.size;
+        const reduction = Math.max(
+          0,
+          Math.round((1 - optimizedSize / originalSize) * 100)
+        );
+
+        setOptimizationInfo({
+          reduction: `${reduction}%`,
+          originalSize: formatBytes(originalSize),
+          optimizedSize: formatBytes(optimizedSize),
         });
 
-        if (!res.ok) {
-          const data = await res.json();
-          throw new Error(data.error || "Erro ao otimizar imagem");
-        }
-
-        const data = await res.json();
-        setOptimizationInfo(data.optimization);
-
-        // 2. Fazer upload ao Firebase Storage
+        // 3. Fazer upload ao Firebase Storage
         setStage("uploading");
         setProgress("Enviando para o servidor...");
 
-        // Converter base64 de volta para File para o upload
-        const optimizedBlob = base64ToBlob(data.main.base64, "image/webp");
-        const optimizedFile = new File(
-          [optimizedBlob],
+        const mainFile = new File(
+          [main.blob],
           file.name.replace(/\.[^.]+$/, ".webp"),
           { type: "image/webp" }
         );
 
-        const media = await uploadMedia(optimizedFile, "media/articles");
+        const media = await uploadMedia(mainFile, "media/articles");
 
-        // 3. Upload da thumbnail também
-        const thumbBlob = base64ToBlob(data.thumb.base64, "image/webp");
+        // 4. Upload da thumbnail também
         const thumbFile = new File(
-          [thumbBlob],
+          [thumb.blob],
           file.name.replace(/\.[^.]+$/, "_thumb.webp"),
           { type: "image/webp" }
         );
@@ -300,13 +390,4 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
       )}
     </div>
   );
-}
-
-function base64ToBlob(base64: string, mimeType: string): Blob {
-  const byteChars = atob(base64);
-  const byteNumbers = new Uint8Array(byteChars.length);
-  for (let i = 0; i < byteChars.length; i++) {
-    byteNumbers[i] = byteChars.charCodeAt(i);
-  }
-  return new Blob([byteNumbers.buffer as ArrayBuffer], { type: mimeType });
 }
