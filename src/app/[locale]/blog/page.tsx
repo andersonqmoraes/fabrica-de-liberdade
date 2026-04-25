@@ -18,11 +18,19 @@ interface BlogPageProps {
 
 export async function generateMetadata({ params }: BlogPageProps): Promise<Metadata> {
   const { locale } = await params;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://fabricadeliberdade.com.br";
+  const localePath = locale === "pt-BR" ? "" : `/${locale}`;
   const t = await getTranslations({ locale, namespace: "seo.blogPage" });
   return {
     title: t("title"),
     description: t("description"),
     alternates: {
+      canonical: `${siteUrl}${localePath}/blog`,
+      languages: {
+        "pt-BR": `${siteUrl}/blog`,
+        en: `${siteUrl}/en/blog`,
+        es: `${siteUrl}/es/blog`,
+      },
       types: {
         "application/rss+xml": "/feed.xml",
       },

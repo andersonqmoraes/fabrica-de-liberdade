@@ -18,8 +18,18 @@ export async function GET() {
     { path: "/ferramentas", priority: "0.8", changefreq: "weekly" },
     { path: "/sobre", priority: "0.5", changefreq: "monthly" },
     { path: "/contato", priority: "0.5", changefreq: "monthly" },
+    { path: "/privacidade", priority: "0.3", changefreq: "yearly" },
+    { path: "/termos", priority: "0.3", changefreq: "yearly" },
+    { path: "/en", priority: "0.9", changefreq: "daily" },
     { path: "/en/blog", priority: "0.8", changefreq: "daily" },
+    { path: "/en/ferramentas", priority: "0.7", changefreq: "weekly" },
+    { path: "/en/sobre", priority: "0.4", changefreq: "monthly" },
+    { path: "/en/contato", priority: "0.4", changefreq: "monthly" },
+    { path: "/es", priority: "0.9", changefreq: "daily" },
     { path: "/es/blog", priority: "0.7", changefreq: "daily" },
+    { path: "/es/ferramentas", priority: "0.7", changefreq: "weekly" },
+    { path: "/es/sobre", priority: "0.4", changefreq: "monthly" },
+    { path: "/es/contato", priority: "0.4", changefreq: "monthly" },
   ];
 
   const articleEntries = articles.map((article) => `
@@ -38,6 +48,12 @@ export async function GET() {
     <lastmod>${article.updatedAt || article.publishedAt}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${SITE_URL}/es/blog/${article.slug}</loc>
+    <lastmod>${article.updatedAt || article.publishedAt}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>`).join("");
 
   const staticEntries = staticPages

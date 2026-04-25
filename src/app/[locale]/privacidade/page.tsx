@@ -10,15 +10,28 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://fabricadeliberdade.com.br";
+  const localePath = locale === "pt-BR" ? "" : `/${locale}`;
   const titles: Record<string, string> = {
     "pt-BR": "Política de Privacidade — Fábrica de Liberdade",
     en: "Privacy Policy — Freedom Factory",
     es: "Política de Privacidad — Fábrica de Libertad",
   };
+  const descriptions: Record<string, string> = {
+    "pt-BR": "Como coletamos, usamos e protegemos seus dados na Fábrica de Liberdade.",
+    en: "How we collect, use, and protect your data at Freedom Factory.",
+    es: "Cómo recopilamos, usamos y protegemos tus datos en Fábrica de Libertad.",
+  };
   return {
     title: titles[locale] || titles["pt-BR"],
-    description: "Como coletamos, usamos e protegemos seus dados na Fábrica de Liberdade.",
-    alternates: { canonical: `${siteUrl}/privacidade` },
+    description: descriptions[locale] || descriptions["pt-BR"],
+    alternates: {
+      canonical: `${siteUrl}${localePath}/privacidade`,
+      languages: {
+        "pt-BR": `${siteUrl}/privacidade`,
+        en: `${siteUrl}/en/privacidade`,
+        es: `${siteUrl}/es/privacidade`,
+      },
+    },
   };
 }
 

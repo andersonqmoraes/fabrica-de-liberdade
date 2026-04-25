@@ -10,15 +10,28 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://fabricadeliberdade.com.br";
+  const localePath = locale === "pt-BR" ? "" : `/${locale}`;
   const titles: Record<string, string> = {
     "pt-BR": "Termos de Uso — Fábrica de Liberdade",
     en: "Terms of Use — Freedom Factory",
     es: "Términos de Uso — Fábrica de Libertad",
   };
+  const descriptions: Record<string, string> = {
+    "pt-BR": "Termos e condições de uso do site Fábrica de Liberdade.",
+    en: "Terms and conditions of use for the Freedom Factory website.",
+    es: "Términos y condiciones de uso del sitio Fábrica de Libertad.",
+  };
   return {
     title: titles[locale] || titles["pt-BR"],
-    description: "Termos e condições de uso do site Fábrica de Liberdade.",
-    alternates: { canonical: `${siteUrl}/termos` },
+    description: descriptions[locale] || descriptions["pt-BR"],
+    alternates: {
+      canonical: `${siteUrl}${localePath}/termos`,
+      languages: {
+        "pt-BR": `${siteUrl}/termos`,
+        en: `${siteUrl}/en/termos`,
+        es: `${siteUrl}/es/termos`,
+      },
+    },
   };
 }
 

@@ -24,11 +24,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     en: "Learn about Freedom Factory: our mission, our story, and how we help people achieve financial freedom with AI and technology.",
     es: "Conoce la Fábrica de Libertad: nuestra misión, historia y cómo ayudamos a las personas a lograr la libertad financiera con IA y tecnología.",
   };
+  const localePath = locale === "pt-BR" ? "" : `/${locale}`;
   return {
     title: titles[locale] || titles["pt-BR"],
     description: descriptions[locale] || descriptions["pt-BR"],
     alternates: {
-      canonical: `${siteUrl}/sobre`,
+      canonical: `${siteUrl}${localePath}/sobre`,
       languages: { "pt-BR": `${siteUrl}/sobre`, en: `${siteUrl}/en/sobre`, es: `${siteUrl}/es/sobre` },
     },
   };
