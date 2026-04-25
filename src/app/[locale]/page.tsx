@@ -6,6 +6,7 @@ import { ArticleCard } from "@/components/blog/ArticleCard";
 import { AdSenseUnit } from "@/components/monetization/AdSenseUnit";
 import { NewsletterSection } from "@/components/home/NewsletterSection";
 import { SidebarNewsletter } from "@/components/home/SidebarNewsletter";
+import { HeroSection } from "@/components/home/HeroSection";
 import { getPublishedArticles, getFeaturedArticles } from "@/lib/firebase/articles";
 import { Link } from "@/i18n/routing";
 import { ArrowRight, Bot, Zap, Code2, DollarSign, Settings2, Star, Flame } from "lucide-react";
@@ -77,7 +78,10 @@ export default async function HomePage({ params }: HomePageProps) {
   return (
     <>
       <Header />
-      <main className="pt-20 min-h-screen">
+      <main className="min-h-screen">
+
+        {/* HERO */}
+        <HeroSection />
 
         {/* MASTHEAD */}
         <div className="bg-dark-800 border-b border-dark-400">
@@ -141,6 +145,51 @@ export default async function HomePage({ params }: HomePageProps) {
           </div>
         </div>
 
+        {/* VITRINE DE CATEGORIAS */}
+        <section className="bg-dark-800 border-b border-dark-400">
+          <div className="container-main py-16">
+            <div className="text-center mb-10">
+              <span className="badge badge-brand mb-4 inline-flex">
+                <Star className="w-3.5 h-3.5" />
+                {l === "pt-BR" ? "O que você vai encontrar" : l === "en" ? "What you will find" : "Lo que encontrarás"}
+              </span>
+              <h2 className="font-display font-bold text-2xl sm:text-3xl text-white">
+                {l === "pt-BR"
+                  ? "Conteúdo que transforma sua vida digital"
+                  : l === "en"
+                  ? "Content that transforms your digital life"
+                  : "Contenido que transforma tu vida digital"}
+              </h2>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {CATEGORIES.map((cat) => {
+                const Icon = CATEGORY_ICONS[cat.slug] || Bot;
+                return (
+                  <Link
+                    key={cat.slug}
+                    href={`/blog?categoria=${cat.slug}` as any}
+                    className="group card p-6 flex flex-col gap-4 transition-all"
+                  >
+                    <div className={`w-12 h-12 ${cat.bg} border ${cat.border} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                      <Icon className={`w-6 h-6 ${cat.text}`} />
+                    </div>
+                    <div>
+                      <h3 className="font-display font-semibold text-white text-base mb-1">
+                        {cat.label[l]}
+                      </h3>
+                      <p className="text-gray-500 text-sm leading-relaxed">{cat.desc[l]}</p>
+                    </div>
+                    <span className={`flex items-center gap-1 text-xs font-medium mt-auto ${cat.text}`}>
+                      {l === "pt-BR" ? "Ver artigos" : l === "en" ? "Browse articles" : "Ver artículos"}
+                      <ArrowRight className="w-3 h-3" />
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
         {/* CONTEÚDO PRINCIPAL + SIDEBAR */}
         <div className="container-main py-12">
           <div className="grid lg:grid-cols-12 gap-10">
@@ -163,13 +212,25 @@ export default async function HomePage({ params }: HomePageProps) {
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-600 py-8 text-sm">
-                  {l === "pt-BR"
-                    ? "Nenhum artigo publicado ainda."
-                    : l === "en"
-                    ? "No articles published yet."
-                    : "Aún no hay artículos publicados."}
-                </p>
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  <div className="w-16 h-16 bg-brand-500/10 border border-brand-500/20 rounded-2xl flex items-center justify-center mb-5">
+                    <Bot className="w-8 h-8 text-brand-400" />
+                  </div>
+                  <h3 className="font-display font-bold text-xl text-white mb-2">
+                    {l === "pt-BR" ? "Conteúdo chegando em breve" : l === "en" ? "Content coming soon" : "Contenido llegando pronto"}
+                  </h3>
+                  <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
+                    {l === "pt-BR"
+                      ? "Estamos preparando artigos incríveis sobre IA, produtividade e liberdade financeira."
+                      : l === "en"
+                      ? "We're preparing amazing articles on AI, productivity and financial freedom."
+                      : "Estamos preparando artículos increíbles sobre IA, productividad y libertad financiera."}
+                  </p>
+                  <Link href="/blog" className="btn-primary mt-8">
+                    {l === "pt-BR" ? "Explorar o blog" : l === "en" ? "Explore the blog" : "Explorar el blog"}
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
               )}
 
               {/* AdSense entre artigos */}
