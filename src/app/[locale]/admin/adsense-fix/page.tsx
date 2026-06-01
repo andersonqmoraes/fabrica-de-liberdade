@@ -344,7 +344,7 @@ export default function AdSenseFixPage() {
           </li>
           <li>
             Escreva pelo menos <strong>5 artigos novos do zero</strong> nas próximas 2-3 semanas,
-            assinados como Anderson Quintino, antes de pedir revisão.
+            assinados como Anderson Moraes, antes de pedir revisão.
           </li>
           <li>
             Não rode <code>automation/scheduler.py</code> até o AdSense aprovar.

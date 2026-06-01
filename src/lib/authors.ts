@@ -17,7 +17,7 @@ export const AUTHORS: Record<string, Author> = {
   anderson: {
     id: "anderson",
     slug: "anderson",
-    name: "Anderson Quintino",
+    name: "Anderson Moraes",
     email: "andersonqm@gmail.com",
     role: {
       "pt-BR": "Fundador e editor responsável",
@@ -26,11 +26,11 @@ export const AUTHORS: Record<string, Author> = {
     },
     bio: {
       "pt-BR":
-        "Anderson Quintino é o fundador e editor responsável da Fábrica de Liberdade. Há mais de uma década trabalha com desenvolvimento de software e automação, e desde 2023 dedica boa parte do tempo a testar e revisar ferramentas de IA aplicadas a produtividade, conteúdo e geração de renda online. Escreve cada artigo com base em testes próprios das ferramentas analisadas e mantém uma posição editorial independente — sem patrocínios fixos e sem guest posts pagos.",
+        "Anderson Moraes é o fundador e editor responsável da Fábrica de Liberdade. Há mais de uma década trabalha com desenvolvimento de software e automação, e desde 2023 dedica boa parte do tempo a testar e revisar ferramentas de IA aplicadas a produtividade, conteúdo e geração de renda online. Escreve cada artigo com base em testes próprios das ferramentas analisadas e mantém uma posição editorial independente — sem patrocínios fixos e sem guest posts pagos.",
       en:
-        "Anderson Quintino is the founder and editor-in-chief of Freedom Factory. He has worked with software development and automation for over a decade, and since 2023 has been dedicating much of his time to testing and reviewing AI tools applied to productivity, content, and online income. He writes every article based on his own tests of the tools analyzed and maintains an independent editorial position — no fixed sponsors, no paid guest posts.",
+        "Anderson Moraes is the founder and editor-in-chief of Freedom Factory. He has worked with software development and automation for over a decade, and since 2023 has been dedicating much of his time to testing and reviewing AI tools applied to productivity, content, and online income. He writes every article based on his own tests of the tools analyzed and maintains an independent editorial position — no fixed sponsors, no paid guest posts.",
       es:
-        "Anderson Quintino es el fundador y editor responsable de Fábrica de Libertad. Lleva más de una década trabajando con desarrollo de software y automatización, y desde 2023 dedica gran parte de su tiempo a probar y reseñar herramientas de IA aplicadas a la productividad, el contenido y la generación de ingresos en línea. Escribe cada artículo basado en sus propias pruebas de las herramientas analizadas y mantiene una posición editorial independiente — sin patrocinadores fijos ni guest posts pagados.",
+        "Anderson Moraes es el fundador y editor responsable de Fábrica de Libertad. Lleva más de una década trabajando con desarrollo de software y automatización, y desde 2023 dedica gran parte de su tiempo a probar y reseñar herramientas de IA aplicadas a la productividad, el contenido y la generación de ingresos en línea. Escribe cada artículo basado en sus propias pruebas de las herramientas analizadas y mantiene una posición editorial independiente — sin patrocinadores fijos ni guest posts pagados.",
     },
     expertise: {
       "pt-BR": [

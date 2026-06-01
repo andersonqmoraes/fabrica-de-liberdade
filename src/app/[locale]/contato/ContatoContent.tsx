@@ -232,7 +232,7 @@ export function ContatoContent() {
                 <div className="space-y-2 text-sm text-gray-500">
                   <div>
                     <div className="text-xs uppercase tracking-wider text-gray-600 mb-0.5">Responsável editorial</div>
-                    Anderson Quintino
+                    Anderson Moraes
                   </div>
                   <div>
                     <div className="text-xs uppercase tracking-wider text-gray-600 mb-0.5">Tipo</div>

@@ -139,7 +139,7 @@ export function Footer() {
               </div>
               <p>
                 <Link href={"/autor/anderson" as any} className="hover:text-brand-400 transition-colors">
-                  Anderson Quintino
+                  Anderson Moraes
                 </Link>
                 {" — "}Fundador e editor responsável
               </p>
