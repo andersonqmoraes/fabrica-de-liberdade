@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Link } from "@/i18n/routing";
-import { Zap, Target, Users, TrendingUp, ArrowRight, Bot, BookOpen, Shield } from "lucide-react";
+import { Zap, Target, TrendingUp, ArrowRight, Bot, BookOpen, Shield } from "lucide-react";
 import { getSobreData } from "@/lib/firebase/sobre";
 import type { Locale } from "@/types";
 
@@ -145,20 +145,24 @@ export default async function AboutPage({ params }: Props) {
           </div>
         </section>
 
-        {/* Stats */}
+        {/* Pilares editoriais */}
         <section className="py-14 border-b border-dark-400">
-          <div className="container-main">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+          <div className="container-main max-w-4xl">
+            <h2 className="font-display font-bold text-2xl text-white mb-8 text-center">
+              {l === "pt-BR" ? "O que cobrimos" : l === "en" ? "What we cover" : "Lo que cubrimos"}
+            </h2>
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 text-center">
               {[
-                { value: sobreData.stats.readers, label: { "pt-BR": "Leitores mensais", en: "Monthly readers", es: "Lectores mensuales" }, icon: Users },
-                { value: sobreData.stats.articles, label: { "pt-BR": "Artigos publicados", en: "Published articles", es: "Artículos publicados" }, icon: BookOpen },
-                { value: sobreData.stats.tools, label: { "pt-BR": "Ferramentas avaliadas", en: "Tools reviewed", es: "Herramientas evaluadas" }, icon: Bot },
-                { value: sobreData.stats.languages, label: { "pt-BR": "Idiomas", en: "Languages", es: "Idiomas" }, icon: TrendingUp },
-              ].map(({ value, label, icon: Icon }) => (
-                <div key={value} className="card p-6">
+                { icon: Bot, label: { "pt-BR": "Ferramentas de IA", en: "AI tools", es: "Herramientas de IA" } },
+                { icon: Zap, label: { "pt-BR": "Produtividade", en: "Productivity", es: "Productividad" } },
+                { icon: TrendingUp, label: { "pt-BR": "Renda com tecnologia", en: "Income with tech", es: "Ingresos con tecnología" } },
+                { icon: BookOpen, label: { "pt-BR": "Reviews independentes", en: "Independent reviews", es: "Reviews independientes" } },
+                { icon: Shield, label: { "pt-BR": "Sem patrocínio disfarçado", en: "No disguised sponsorship", es: "Sin patrocinio disfrazado" } },
+                { icon: Target, label: { "pt-BR": "PT · EN · ES", en: "PT · EN · ES", es: "PT · EN · ES" } },
+              ].map(({ icon: Icon, label }) => (
+                <div key={label["pt-BR"]} className="card p-5">
                   <Icon className="w-6 h-6 text-brand-400 mx-auto mb-3" />
-                  <div className="font-display font-bold text-3xl text-white mb-1">{value}</div>
-                  <div className="text-gray-500 text-sm">{label[l]}</div>
+                  <div className="text-gray-300 text-sm font-medium">{label[l]}</div>
                 </div>
               ))}
             </div>

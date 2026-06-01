@@ -18,6 +18,8 @@ interface HomePageProps {
   params: Promise<{ locale: string }>;
 }
 
+export const revalidate = 300;
+
 export async function generateMetadata({ params }: HomePageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "seo.homePage" });
@@ -62,8 +64,8 @@ export default async function HomePage({ params }: HomePageProps) {
       getFeaturedArticles(3),
       getPublishedArticles(9),
     ]);
-  } catch {
-    // Firebase not configured
+  } catch (err) {
+    console.error("[home] Failed to load articles from Firestore:", err);
   }
 
   const featuredIds = new Set(featuredArticles.map((a) => a.id));

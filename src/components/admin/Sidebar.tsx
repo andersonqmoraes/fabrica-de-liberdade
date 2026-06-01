@@ -18,6 +18,7 @@ import {
   Wrench,
   Users,
   Info,
+  ShieldAlert,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/layout/Logo";
@@ -63,16 +64,6 @@ const navItems: NavItem[] = [
     labelKey: "newsletter",
   },
   {
-    href: "/admin/ferramentas",
-    icon: Wrench,
-    labelKey: "tools",
-  },
-  {
-    href: "/admin/newsletter",
-    icon: Users,
-    labelKey: "newsletter",
-  },
-  {
     href: "/admin/mensagens",
     icon: Mail,
     labelKey: "messages",
@@ -86,6 +77,11 @@ const navItems: NavItem[] = [
     href: "/admin/configuracoes",
     icon: Settings,
     labelKey: "settings",
+  },
+  {
+    href: "/admin/adsense-fix",
+    icon: ShieldAlert,
+    labelKey: "adsenseFix",
   },
 ] as const;
 

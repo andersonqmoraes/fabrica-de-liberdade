@@ -2,14 +2,39 @@
 ============================================
 FÁBRICA DE LIBERDADE — Agendador de Conteúdo
 ============================================
-Automatiza a publicação de artigos em horários estratégicos.
-Roda como processo contínuo (pode usar cron job ou PM2).
 
-Uso:
-  python scheduler.py                  # Roda o scheduler
-  python scheduler.py --once           # Executa uma vez e sai
+⚠️  PAUSADO — Não executar em produção.
+
+Motivo: Google AdSense rejeitou o site por "Conteúdo de baixo valor"
+em 31/05/2026. Toda a geração automatizada de conteúdo está suspensa
+até o site passar pela revisão. Conteúdo 100% gerado por IA é uma das
+principais causas dessa rejeição.
+
+Antes de retomar:
+  1. Aguardar aprovação do AdSense.
+  2. Mudar os prompts para gerar drafts (status="draft"), não publicar.
+  3. Revisão humana obrigatória antes de mudar para "published".
+  4. Adicionar disclosure "Artigo revisado por <autor>" no template.
+
+Uso (apenas dev/teste local):
   python scheduler.py --dry-run        # Simula sem salvar
+  python scheduler.py --once --dry-run # Um job dry-run
 """
+
+import sys
+
+
+def _abort_if_not_dry_run():
+    if "--dry-run" not in sys.argv:
+        print(
+            "ERRO: scheduler.py está PAUSADO. "
+            "Veja o cabeçalho do arquivo. "
+            "Para testar localmente use --dry-run."
+        )
+        sys.exit(1)
+
+
+_abort_if_not_dry_run()
 
 import os
 import json

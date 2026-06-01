@@ -129,6 +129,37 @@ export function Footer() {
         </div>
       </div>
 
+      {/* Identificação editorial */}
+      <div className="border-t border-dark-400 bg-dark-800/50">
+        <div className="container-main py-6">
+          <div className="grid sm:grid-cols-2 gap-4 text-xs text-gray-600 leading-relaxed">
+            <div>
+              <div className="font-medium text-gray-500 uppercase tracking-wider text-[10px] mb-1">
+                Responsável editorial
+              </div>
+              <p>
+                <Link href={"/autor/anderson" as any} className="hover:text-brand-400 transition-colors">
+                  Anderson Quintino
+                </Link>
+                {" — "}Fundador e editor responsável
+              </p>
+              <p className="mt-1">
+                Contato: <a href="mailto:contato@fabricadeliberdade.com.br" className="hover:text-brand-400 transition-colors">contato@fabricadeliberdade.com.br</a>
+              </p>
+            </div>
+            <div>
+              <div className="font-medium text-gray-500 uppercase tracking-wider text-[10px] mb-1">
+                Política editorial
+              </div>
+              <p>
+                Blog independente. Reviews baseados em testes reais. Sem patrocínios fixos e sem guest posts pagos. Pode conter links de afiliados — veja a{" "}
+                <Link href={"/privacidade" as any} className="hover:text-brand-400 transition-colors">política de privacidade</Link>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Bottom bar */}
       <div className="border-t border-dark-400">
         <div className="container-main py-5">

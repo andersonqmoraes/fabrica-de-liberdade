@@ -221,10 +221,32 @@ export function ContatoContent() {
               </div>
 
               <div className="card p-5">
-                <h3 className="font-semibold text-gray-200 mb-2 text-sm">Nota</h3>
+                <h3 className="font-semibold text-gray-200 mb-2 text-sm">Política editorial</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">
-                  Não aceitamos guest posts pagos. Todas as recomendações e reviews são baseadas em avaliação independente.
+                  Não aceitamos guest posts pagos. Todas as recomendações e reviews são baseadas em avaliação independente baseada em testes próprios das ferramentas.
                 </p>
+              </div>
+
+              <div className="card p-5">
+                <h3 className="font-semibold text-gray-200 mb-3 text-sm">Identificação</h3>
+                <div className="space-y-2 text-sm text-gray-500">
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-gray-600 mb-0.5">Responsável editorial</div>
+                    Anderson Quintino
+                  </div>
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-gray-600 mb-0.5">Tipo</div>
+                    Blog editorial independente, mantido por pessoa física
+                  </div>
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-gray-600 mb-0.5">Localização</div>
+                    Brasil
+                  </div>
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-gray-600 mb-0.5">Fundado em</div>
+                    2025
+                  </div>
+                </div>
               </div>
             </div>
           </div>

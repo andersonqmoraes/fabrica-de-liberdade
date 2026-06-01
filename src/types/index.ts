@@ -50,10 +50,15 @@ export interface Article {
   createdAt: string;
   updatedAt: string;
 
-  // Automação
+  // Autoria (referência ao módulo src/lib/authors.ts)
+  authorId?: string;
+
+  // Automação (interno — nunca exibir publicamente)
   generatedByAI: boolean;
   aiModel?: string;
   targetKeyword?: string;
+  reviewedBy?: string; // id do revisor humano
+  reviewedAt?: string; // ISO date
 }
 
 export interface ArticleTranslation {

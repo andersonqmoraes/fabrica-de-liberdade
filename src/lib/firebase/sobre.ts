@@ -23,19 +23,19 @@ const DEFAULTS: SobreData = {
     es: "Nuestra misión es tu libertad",
   },
   subheadline: {
-    "pt-BR": "A Fábrica de Liberdade nasceu com um propósito simples: ajudar pessoas comuns a usarem tecnologia e inteligência artificial para conquistar mais tempo, mais dinheiro e mais escolhas.",
-    en: "Freedom Factory was born with a simple purpose: to help ordinary people use technology and artificial intelligence to gain more time, more money, and more choices.",
-    es: "La Fábrica de Libertad nació con un propósito simple: ayudar a personas comunes a usar tecnología e inteligencia artificial para ganar más tiempo, más dinero y más opciones.",
+    "pt-BR": "A Fábrica de Liberdade é um blog editorial independente sobre inteligência artificial, produtividade e tecnologia — mantido por Anderson Quintino, com o propósito de tornar acessível o que os grandes players já dominam.",
+    en: "Freedom Factory is an independent editorial blog about artificial intelligence, productivity, and technology — maintained by Anderson Quintino, with the purpose of making accessible what global players already master.",
+    es: "Fábrica de Libertad es un blog editorial independiente sobre inteligencia artificial, productividad y tecnología — mantenido por Anderson Quintino, con el propósito de hacer accesible lo que los grandes actores ya dominan.",
   },
   story: {
-    "pt-BR": "Tudo começou com uma pergunta simples: por que as ferramentas de IA e produtividade que estão transformando empresas bilionárias ainda são um mistério para a maioria das pessoas?\n\nFundada em 2025, a Fábrica de Liberdade foi criada para preencher esse gap. Produzimos conteúdo em português, inglês e espanhol para que qualquer pessoa no mundo lusófono e hispânico possa acessar o mesmo conhecimento que os grandes players globais.\n\nHoje, ajudamos mais de 50.000 leitores mensais a dominar ferramentas de IA, aumentar sua produtividade e criar novas fontes de renda utilizando tecnologia.",
-    en: "It all started with a simple question: why are the AI and productivity tools transforming billion-dollar companies still a mystery to most people?\n\nFounded in 2025, Freedom Factory was created to fill this gap. We produce content in Portuguese, English, and Spanish so that anyone in the Lusophone and Hispanic world can access the same knowledge as the global players.\n\nToday, we help over 50,000 monthly readers master AI tools, increase their productivity, and create new income streams using technology.",
-    es: "Todo comenzó con una pregunta simple: ¿por qué las herramientas de IA y productividad que están transformando empresas billonarias siguen siendo un misterio para la mayoría de las personas?\n\nFundada en 2025, la Fábrica de Libertad fue creada para llenar este vacío. Producimos contenido en portugués, inglés y español para que cualquier persona en el mundo lusófono e hispánico pueda acceder al mismo conocimiento que los grandes jugadores globales.\n\nHoy, ayudamos a más de 50,000 lectores mensuales a dominar herramientas de IA, aumentar su productividad y crear nuevas fuentes de ingresos usando tecnología.",
+    "pt-BR": "A Fábrica de Liberdade nasceu da observação de que as ferramentas de IA e produtividade que estão transformando empresas inteiras ainda parecem inacessíveis para a maioria das pessoas.\n\nFundado em 2025 por Anderson Quintino, este é um blog editorial independente, mantido individualmente, sem patrocinadores fixos. Cada artigo passa por curadoria e revisão antes de ser publicado, e os reviews são baseados em testes reais das ferramentas analisadas.\n\nO conteúdo é publicado em português, inglês e espanhol para alcançar leitores no mundo lusófono e hispânico que querem aprender, na prática, a usar tecnologia para ganhar tempo e criar novas oportunidades.",
+    en: "Freedom Factory was born from the observation that AI and productivity tools transforming entire industries still feel inaccessible to most people.\n\nFounded in 2025 by Anderson Quintino, this is an independent editorial blog, individually maintained, with no fixed sponsors. Every article goes through curation and review before publication, and reviews are based on real tests of the tools analyzed.\n\nContent is published in Portuguese, English, and Spanish to reach readers in the Lusophone and Hispanic world who want to learn, in practice, how to use technology to gain time and create new opportunities.",
+    es: "Fábrica de Libertad nació de la observación de que las herramientas de IA y productividad que están transformando industrias enteras siguen siendo inaccesibles para la mayoría de las personas.\n\nFundado en 2025 por Anderson Quintino, este es un blog editorial independiente, mantenido individualmente, sin patrocinadores fijos. Cada artículo pasa por curaduría y revisión antes de publicarse, y los reviews se basan en pruebas reales de las herramientas analizadas.\n\nEl contenido se publica en portugués, inglés y español para llegar a lectores del mundo lusófono e hispánico que quieren aprender, en la práctica, a usar tecnología para ganar tiempo y crear nuevas oportunidades.",
   },
   stats: {
-    readers: "50k+",
-    articles: "500+",
-    tools: "200+",
+    readers: "",
+    articles: "",
+    tools: "",
     languages: "3",
   },
 };

@@ -8,6 +8,8 @@ import { ArticleCard } from "@/components/blog/ArticleCard";
 import { AdSenseUnit } from "@/components/monetization/AdSenseUnit";
 import { AffiliateBox } from "@/components/monetization/AffiliateBox";
 import { ShareButton } from "@/components/blog/ShareButton";
+import { AuthorBio } from "@/components/blog/AuthorBio";
+import { AffiliateDisclosure } from "@/components/blog/AffiliateDisclosure";
 import { getArticleBySlug, getRelatedArticles, incrementViews } from "@/lib/firebase/articles";
 import { formatDate, calculateReadTime } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
@@ -17,11 +19,12 @@ import {
   Eye,
   Calendar,
   Tag,
-  Bot,
   ChevronRight,
   Home,
+  User,
 } from "lucide-react";
-import type { Locale } from "@/types";
+import { AUTHORS, DEFAULT_AUTHOR_ID } from "@/lib/authors";
+import type { Locale, Article } from "@/types";
 import { Link } from "@/i18n/routing";
 
 interface ArticlePageProps {
@@ -106,6 +109,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const categoryLabel = categoryLabels[article.category]?.[l] || article.category;
   const readTime = article.readTime || calculateReadTime(translation.content);
 
+  const authorId = (article as Article & { authorId?: string }).authorId || DEFAULT_AUTHOR_ID;
+  const author = AUTHORS[authorId] || AUTHORS[DEFAULT_AUTHOR_ID];
+
   // JSON-LD Article schema
   const articleSchema = {
     "@context": "https://schema.org",
@@ -116,9 +122,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     datePublished: article.publishedAt,
     dateModified: article.updatedAt,
     author: {
-      "@type": "Organization",
-      name: "Fábrica de Liberdade",
-      url: "https://fabricadeliberdade.com.br",
+      "@type": "Person",
+      name: author.name,
+      url: `https://fabricadeliberdade.com.br/autor/${author.slug}`,
+      sameAs: author.sameAs,
     },
     publisher: {
       "@type": "Organization",
@@ -163,12 +170,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <Tag className="w-3 h-3" />
                 {categoryLabel}
               </span>
-              {article.generatedByAI && (
-                <span className="badge bg-gold-500/20 text-gold-400 border border-gold-500/30">
-                  <Bot className="w-3 h-3" />
-                  AI Enhanced
-                </span>
-              )}
               {article.tags.slice(0, 3).map((tag) => (
                 <span key={tag} className="badge bg-dark-500 text-gray-500 border border-dark-400 text-xs">
                   #{tag}
@@ -183,6 +184,25 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             <p className="text-gray-400 text-lg leading-relaxed mb-6">
               {translation.excerpt}
             </p>
+
+            {/* Byline com autor real */}
+            <Link
+              href={`/autor/${author.slug}` as any}
+              className="flex items-center gap-3 mb-6 group w-fit"
+            >
+              <div className="w-11 h-11 rounded-full bg-brand-500/20 border border-brand-500/30 flex items-center justify-center flex-shrink-0">
+                <User className="w-5 h-5 text-brand-400" />
+              </div>
+              <div>
+                <div className="text-sm text-gray-500">
+                  {l === "pt-BR" ? "Por" : l === "en" ? "By" : "Por"}{" "}
+                  <span className="text-gray-200 font-medium group-hover:text-brand-400 transition-colors">
+                    {author.name}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-600">{author.role[l]}</div>
+              </div>
+            </Link>
 
             <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-dark-400">
               <div className="flex items-center gap-5 text-gray-600 text-sm">
@@ -214,6 +234,11 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 priority
               />
             </div>
+          )}
+
+          {/* Disclosure de afiliação — exibida apenas em artigos com links de afiliados */}
+          {article.affiliateLinks && article.affiliateLinks.length > 0 && (
+            <AffiliateDisclosure locale={l} />
           )}
 
           {/* Top AdSense */}
@@ -277,7 +302,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
           {/* Affiliate links */}
           {article.affiliateLinks && article.affiliateLinks.length > 0 && (
-            <AffiliateBox links={article.affiliateLinks} variant="cards" />
+            <>
+              <AffiliateBox links={article.affiliateLinks} variant="cards" />
+              <AffiliateDisclosure locale={l} variant="compact" />
+            </>
           )}
 
           {/* Bottom AdSense */}
@@ -297,6 +325,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </span>
             ))}
           </div>
+
+          {/* Author bio box */}
+          <AuthorBio author={author} locale={l} />
         </article>
 
         {/* Related articles */}

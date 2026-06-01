@@ -62,11 +62,6 @@ export function ArticleCard({ article, variant = "default" }: ArticleCardProps) 
                 <Tag className="w-3 h-3" />
                 {categoryLabel}
               </span>
-              {article.generatedByAI && (
-                <span className="badge bg-gold-500/20 text-gold-400 border border-gold-500/30">
-                  ✨ AI Enhanced
-                </span>
-              )}
             </div>
             <h2 className="font-display font-bold text-2xl lg:text-3xl text-white mb-3 line-clamp-2 group-hover:text-brand-300 transition-colors">
               {translation.title}
