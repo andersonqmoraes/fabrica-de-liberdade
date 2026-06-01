@@ -19,6 +19,7 @@ import {
   Users,
   Info,
   ShieldAlert,
+  Upload,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/layout/Logo";
@@ -82,6 +83,11 @@ const navItems: NavItem[] = [
     href: "/admin/adsense-fix",
     icon: ShieldAlert,
     labelKey: "adsenseFix",
+  },
+  {
+    href: "/admin/import-drafts",
+    icon: Upload,
+    labelKey: "importDrafts",
   },
 ] as const;
 
